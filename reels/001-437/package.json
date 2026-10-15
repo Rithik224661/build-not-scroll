@@ -1,0 +1,24 @@
+{
+  "name": "reel-001-437",
+  "version": "1.0.0",
+  "description": "Reel 001 \"437\": a 40-second Instagram reel where every frame is drawn by three.js in headless Chrome, voiced by local Kokoro TTS and scored in Python.",
+  "private": true,
+  "license": "MIT",
+  "author": "Rithik Gour",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "voice": "python3 tts.py",
+    "stills": "node render.mjs --stills",
+    "render": "node render.mjs",
+    "render:fresh": "node render.mjs --fresh",
+    "mix": "python3 mix.py",
+    "encode": "node -e \"require('fs').mkdirSync('out',{recursive:true})\" && ffmpeg -y -framerate 30 -i frames/f%05d.png -i audio/mix.wav -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:v libx264 -preset slow -crf 17 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest -movflags +faststart out/reel.mp4"
+  },
+  "dependencies": {
+    "puppeteer": "^25.13.0",
+    "three": "^0.186.1"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "title": "437",
+  "voice": {
+    "id": "af_heart",
+    "speed": 1.05
+  },
+  "lines": [
+    {
+      "id": "L01",
+      "text": "You watched four hundred and thirty-seven AI reels this month.",
+      "caption": "You watched 437 AI reels this month.",
+      "pre": 0.15,
+      "hl": [
+        "437"
+      ]
+    },
+    {
+      "id": "L02",
+      "text": "Things you actually built?",
+      "pre": 0.3,
+      "hl": [
+        "built?"
+      ]
+    },
+    {
+      "id": "L03",
+      "text": "Zero.",
+      "pre": 0.45,
+      "hl": [
+        "Zero."
+      ]
+    },
+    {
+      "id": "L04",
+      "text": "Because most AI content is made to keep you scrolling.",
+      "pre": 0.5,
+      "hl": [
+        "scrolling."
+      ]
+    },
+    {
+      "id": "L05",
+      "text": "Not building.",
+      "pre": 0.2,
+      "hl": [
+        "building."
+      ]
+    },
+    {
+      "id": "L06",
+      "text": "So this account has three rules.",
+      "pre": 0.95,
+      "hl": [
+        "three",
+        "rules."
+      ]
+    },
+    {
+      "id": "L07",
+      "text": "One. No face.",
+      "caption": "No face.",
+      "pre": 0.35,
+      "hl": [
+        "face."
+      ]
+    },
+    {
+      "id": "L08",
+      "text": "Two. No hype.",
+      "caption": "No hype.",
+      "pre": 0.9,
+      "hl": [
+        "hype."
+      ]
+    },
+    {
+      "id": "L09",
+      "text": "Three. Every reel is something you can build in ten minutes.",
+      "caption": "Every reel = something you can build in 10 minutes.",
+      "pre": 0.6,
+      "hl": [
+        "build",
+        "10",
+        "minutes."
+      ]
+    },
+    {
+      "id": "L10",
+      "text": "Made by an engineer who ships AI agents to production.",
+      "pre": 0.5,
+      "hl": [
+        "AI",
+        "agents",
+        "production."
+      ]
+    },
+    {
+      "id": "L11",
+      "text": "Oh. And this reel?",
+      "pre": 0.75,
+      "hl": []
+    },
+    {
+      "id": "L12",
+      "text": "Nobody filmed it. Nobody edited it.",
+      "pre": 0.35,
+      "hl": [
+        "filmed",
+        "edited"
+      ]
+    },
+    {
+      "id": "L13",
+      "text": "It's code. Every single frame.",
+      "pre": 0.45,
+      "hl": [
+        "code."
+      ]
+    },
+    {
+      "id": "L14",
+      "text": "Comment, source, and I'll send you the code.",
+      "caption": "Comment \"SOURCE\" and I'll send you the code.",
+      "pre": 1.1,
+      "hl": [
+        "\"SOURCE\""
+      ]
+    },
+    {
+      "id": "L15",
+      "text": "Follow if you'd rather build than scroll.",
+      "pre": 0.35,
+      "hl": [
+        "build"
+      ]
+    },
+    {
+      "id": "L16",
+      "text": "Make that four hundred and thirty-eight.",
+      "caption": "\u2026make that 438.",
+      "pre": 0.9,
+      "hl": [
+        "438."
+      ]
+    }
+  ],
+  "tail": 1.0
+}

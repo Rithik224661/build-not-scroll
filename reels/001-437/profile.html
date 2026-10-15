@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile Picture</title>
+<style>html,body{margin:0;background:#000}</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1080"></canvas>
+<script>
+// rithikgour.ai profile picture — the channel's bot, built to read at 110 px inside Instagram's circle crop.
+const c = document.getElementById('c'), g = c.getContext('2d'), S = 1080, cx = S / 2;
+function rr(x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function draw(mood) {
+  // background: deep ink to teal, light coming from behind the head
+  const bg = g.createRadialGradient(cx, 470, 60, cx, 540, 760);
+  bg.addColorStop(0, '#0f3b31'); bg.addColorStop(0.55, '#071613'); bg.addColorStop(1, '#030706');
+  g.fillStyle = bg; g.fillRect(0, 0, S, S);
+  // halo ring
+  g.save(); g.strokeStyle = 'rgba(126,240,196,0.18)'; g.lineWidth = 6; g.beginPath(); g.arc(cx, 560, 430, 0, Math.PI * 2); g.stroke(); g.restore();
+  // antenna
+  g.fillStyle = '#16181d'; rr(cx - 11, 150, 22, 120, 11); g.fill();
+  g.save(); g.shadowColor = '#7ef0c4'; g.shadowBlur = 60; g.fillStyle = '#7ef0c4'; g.beginPath(); g.arc(cx, 150, 44, 0, Math.PI * 2); g.fill(); g.restore();
+  // ears
+  for (const s of [-1, 1]) {
+    g.fillStyle = '#e9e5dd'; rr(cx + s * 365 - 40, 455, 80, 170, 40); g.fill();
+    g.save(); g.shadowColor = '#7ef0c4'; g.shadowBlur = 30; g.fillStyle = '#7ef0c4'; rr(cx + s * 388 - 14, 490, 28, 100, 14); g.fill(); g.restore();
+  }
+  // head with soft shading
+  const hd = g.createLinearGradient(0, 250, 0, 860);
+  hd.addColorStop(0, '#ffffff'); hd.addColorStop(0.65, '#f0ece4'); hd.addColorStop(1, '#cfcac0');
+  g.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 50; g.shadowOffsetY = 24; g.fillStyle = hd; rr(cx - 350, 255, 700, 600, 170); g.fill(); g.restore();
+  // screen
+  g.fillStyle = '#05070a'; rr(cx - 282, 330, 564, 440, 96); g.fill();
+  const glow = g.createRadialGradient(cx, 550, 20, cx, 550, 300); glow.addColorStop(0, 'rgba(126,240,196,0.16)'); glow.addColorStop(1, 'rgba(126,240,196,0)');
+  g.fillStyle = glow; rr(cx - 282, 330, 564, 440, 96); g.fill();
+  // eyes + smile
+  g.save(); g.shadowColor = '#7ef0c4'; g.shadowBlur = 36; g.fillStyle = '#7ef0c4'; g.strokeStyle = '#7ef0c4'; g.lineCap = 'round';
+  if (mood === 'wink') {
+    rr(cx - 160, 455, 84, 120, 42); g.fill();
+    g.lineWidth = 34; g.beginPath(); g.moveTo(cx + 70, 520); g.lineTo(cx + 170, 520); g.stroke();
+  } else { rr(cx - 160, 455, 84, 120, 42); g.fill(); rr(cx + 76, 455, 84, 120, 42); g.fill(); }
+  g.lineWidth = 30; g.beginPath(); g.arc(cx, 600, 92, Math.PI * 0.2, Math.PI * 0.8); g.stroke();
+  g.restore();
+  // glass sheen
+  g.save(); rr(cx - 282, 330, 564, 440, 96); g.clip();
+  const sh = g.createLinearGradient(cx - 282, 330, cx + 100, 600); sh.addColorStop(0, 'rgba(255,255,255,0.13)'); sh.addColorStop(0.5, 'rgba(255,255,255,0)');
+  g.fillStyle = sh; g.fillRect(cx - 282, 330, 564, 440); g.restore();
+}
+draw(new URLSearchParams(location.search).get('mood') || 'open');
+window.READY = true;
+</script>
+</body>
+</html>
