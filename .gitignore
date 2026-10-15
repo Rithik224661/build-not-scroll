@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# render outputs (regenerate with npm run stills / render / mix / encode)
+frames/
+stills/
+out/
+audio/
+
+# model weights (fetch with scripts/download-models.sh)
+assets/*.onnx
+assets/*.bin
+
+# never commit video
+*.mp4
+
+# misc
+__pycache__/
+.DS_Store
+*.log
