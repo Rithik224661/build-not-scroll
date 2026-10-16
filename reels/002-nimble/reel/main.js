@@ -307,7 +307,7 @@ function check(cx, cy, k) {
   g.beginPath(); g.moveTo(cx - 14, cy + 1); g.lineTo(cx - 3, cy + 12); if (p > 0.45) g.lineTo(cx - 3 + 19 * clamp01((p - 0.45) / 0.55), cy + 12 - 23 * clamp01((p - 0.45) / 0.55)); g.stroke(); g.restore();
 }
 function scenePromises(t) {
-  const items = [['No API key.', wordAt('V09', 0)], ['No bill.', wordAt('V09', 3)], ['Nothing leaves', wordAt('V09', 6)]];
+  const items = [['No API key.', Math.min(wordAt('V09', 0), T.s4 + 0.12)], ['No bill.', wordAt('V09', 3)], ['Nothing leaves', wordAt('V09', 6)]];
   items.forEach(([s, at], i) => {
     const k = easeOut((t - (at - 0.08)) / 0.5); if (k <= 0) return;
     const y = 800 + i * 190;
@@ -453,7 +453,7 @@ function sfxCues() {
   typing(K.c3, K.c3e); add(K.c3e + 0.08, 'text/typewriter-hit-soft', -21, 'enter');
   [0, 1, 2].forEach((i) => add(K.rows + i * 0.2, 'ui/switch-light', -24 - i * 1.5, 'row'));
   add(T.s4 - 0.1, 'transition/swoosh-quick', -23, 'cut s4');
-  [0, 3, 6].forEach((k, i) => add(wordAt('V09', k) - 0.05, 'ui/switch-tap', -19 - i, 'check'));
+  [0, 3, 6].forEach((k, i) => add((i ? wordAt('V09', k) : Math.min(wordAt('V09', 0), T.s4 + 0.12)) - 0.05, 'ui/switch-tap', -19 - i, 'check'));
   add(T.s5 - 0.05, 'impact/impact-zoom-quick', -17, 'SORT');
   add(T.s6 - 0.1, 'transition/whoosh-fast', -24, 'cut brand');
   return c.sort((a, b) => a.t - b.t);
