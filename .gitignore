@@ -18,3 +18,7 @@ assets/*.bin
 __pycache__/
 .DS_Store
 *.log
+
+# reel 002
+assets/audio/
+qa/

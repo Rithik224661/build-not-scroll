@@ -1,0 +1,582 @@
+{
+ "fps": 30,
+ "duration": 35.7333,
+ "frames": 1072,
+ "lines": [
+  {
+   "id": "V01",
+   "scene": "s1",
+   "start": 0.22,
+   "end": 4.06,
+   "caption": "Meta just released the weights to an 816 billion parameter AI model.",
+   "hl": [
+    "816"
+   ],
+   "words": [
+    {
+     "w": "Meta",
+     "t": 0.22
+    },
+    {
+     "w": "just",
+     "t": 0.56
+    },
+    {
+     "w": "released",
+     "t": 0.88
+    },
+    {
+     "w": "the",
+     "t": 1.14
+    },
+    {
+     "w": "weights",
+     "t": 1.34
+    },
+    {
+     "w": "to",
+     "t": 1.52
+    },
+    {
+     "w": "an",
+     "t": 1.76
+    },
+    {
+     "w": "816",
+     "t": 1.88
+    },
+    {
+     "w": "billion",
+     "t": 2.64
+    },
+    {
+     "w": "parameter",
+     "t": 2.86
+    },
+    {
+     "w": "AI",
+     "t": 3.34
+    },
+    {
+     "w": "model.",
+     "t": 3.66
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "scene": "s1",
+   "start": 4.48,
+   "end": 6.1,
+   "caption": "To run it at home, you need two Mac Studios.",
+   "hl": [
+    "two"
+   ],
+   "words": [
+    {
+     "w": "To",
+     "t": 4.48
+    },
+    {
+     "w": "run",
+     "t": 4.62
+    },
+    {
+     "w": "it",
+     "t": 4.74
+    },
+    {
+     "w": "at",
+     "t": 4.82
+    },
+    {
+     "w": "home,",
+     "t": 4.94
+    },
+    {
+     "w": "you",
+     "t": 5.3
+    },
+    {
+     "w": "need",
+     "t": 5.32
+    },
+    {
+     "w": "two",
+     "t": 5.46
+    },
+    {
+     "w": "Mac",
+     "t": 5.68
+    },
+    {
+     "w": "Studios.",
+     "t": 5.86
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "scene": "s2",
+   "start": 6.996,
+   "end": 9.376,
+   "caption": "So here's the release from this week you'll actually use.",
+   "hl": [
+    "actually"
+   ],
+   "words": [
+    {
+     "w": "So",
+     "t": 6.996
+    },
+    {
+     "w": "here's",
+     "t": 7.296
+    },
+    {
+     "w": "the",
+     "t": 7.616
+    },
+    {
+     "w": "release",
+     "t": 7.736
+    },
+    {
+     "w": "from",
+     "t": 7.936
+    },
+    {
+     "w": "this",
+     "t": 8.116
+    },
+    {
+     "w": "week",
+     "t": 8.276
+    },
+    {
+     "w": "you'll",
+     "t": 8.456
+    },
+    {
+     "w": "actually",
+     "t": 8.656
+    },
+    {
+     "w": "use.",
+     "t": 8.956
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "scene": "s2",
+   "start": 9.756,
+   "end": 12.716,
+   "caption": "Ollama now ships Nimble, a decision model that runs on your own machine.",
+   "hl": [
+    "Nimble,"
+   ],
+   "words": [
+    {
+     "w": "Ollama",
+     "t": 9.756
+    },
+    {
+     "w": "now",
+     "t": 9.916
+    },
+    {
+     "w": "ships",
+     "t": 10.136
+    },
+    {
+     "w": "Nimble,",
+     "t": 10.376
+    },
+    {
+     "w": "a",
+     "t": 10.976
+    },
+    {
+     "w": "decision",
+     "t": 11.076
+    },
+    {
+     "w": "model",
+     "t": 11.316
+    },
+    {
+     "w": "that",
+     "t": 11.576
+    },
+    {
+     "w": "runs",
+     "t": 11.796
+    },
+    {
+     "w": "on",
+     "t": 11.976
+    },
+    {
+     "w": "your",
+     "t": 12.136
+    },
+    {
+     "w": "own",
+     "t": 12.256
+    },
+    {
+     "w": "machine.",
+     "t": 12.416
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "scene": "s3",
+   "start": 13.376,
+   "end": 14.556,
+   "caption": "Install it with one command.",
+   "hl": [
+    "one"
+   ],
+   "words": [
+    {
+     "w": "Install",
+     "t": 13.376
+    },
+    {
+     "w": "it",
+     "t": 13.776
+    },
+    {
+     "w": "with",
+     "t": 13.916
+    },
+    {
+     "w": "one",
+     "t": 14.016
+    },
+    {
+     "w": "command.",
+     "t": 14.196
+    }
+   ]
+  },
+  {
+   "id": "V06",
+   "scene": "s3",
+   "start": 15.156,
+   "end": 17.676,
+   "caption": "Pipe in an email, and ask: is a refund being requested?",
+   "hl": [
+    "refund"
+   ],
+   "words": [
+    {
+     "w": "Pipe",
+     "t": 15.156
+    },
+    {
+     "w": "in",
+     "t": 15.196
+    },
+    {
+     "w": "an",
+     "t": 15.356
+    },
+    {
+     "w": "email,",
+     "t": 15.496
+    },
+    {
+     "w": "and",
+     "t": 15.716
+    },
+    {
+     "w": "ask:",
+     "t": 16.016
+    },
+    {
+     "w": "is",
+     "t": 16.636
+    },
+    {
+     "w": "a",
+     "t": 16.656
+    },
+    {
+     "w": "refund",
+     "t": 16.756
+    },
+    {
+     "w": "being",
+     "t": 17.036
+    },
+    {
+     "w": "requested?",
+     "t": 17.256
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "scene": "s3",
+   "start": 18.676,
+   "end": 20.556,
+   "caption": "It answers yes or no, with a confidence score.",
+   "hl": [
+    "yes",
+    "no,"
+   ],
+   "words": [
+    {
+     "w": "It",
+     "t": 18.676
+    },
+    {
+     "w": "answers",
+     "t": 18.836
+    },
+    {
+     "w": "yes",
+     "t": 19.136
+    },
+    {
+     "w": "or",
+     "t": 19.316
+    },
+    {
+     "w": "no,",
+     "t": 19.496
+    },
+    {
+     "w": "with",
+     "t": 19.656
+    },
+    {
+     "w": "a",
+     "t": 19.816
+    },
+    {
+     "w": "confidence",
+     "t": 19.916
+    },
+    {
+     "w": "score.",
+     "t": 20.176
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "scene": "s3",
+   "start": 20.856,
+   "end": 23.156,
+   "caption": "Add labels, and it routes every ticket to the right team.",
+   "hl": [
+    "routes"
+   ],
+   "words": [
+    {
+     "w": "Add",
+     "t": 20.856
+    },
+    {
+     "w": "labels,",
+     "t": 21.056
+    },
+    {
+     "w": "and",
+     "t": 21.336
+    },
+    {
+     "w": "it",
+     "t": 21.736
+    },
+    {
+     "w": "routes",
+     "t": 21.816
+    },
+    {
+     "w": "every",
+     "t": 21.976
+    },
+    {
+     "w": "ticket",
+     "t": 22.276
+    },
+    {
+     "w": "to",
+     "t": 22.456
+    },
+    {
+     "w": "the",
+     "t": 22.656
+    },
+    {
+     "w": "right",
+     "t": 22.736
+    },
+    {
+     "w": "team.",
+     "t": 22.876
+    }
+   ]
+  },
+  {
+   "id": "V09",
+   "scene": "s4",
+   "start": 24.439,
+   "end": 27.379,
+   "caption": "No API key. No bill. And nothing leaves your laptop.",
+   "hl": [],
+   "words": [
+    {
+     "w": "No",
+     "t": 24.439
+    },
+    {
+     "w": "API",
+     "t": 24.759
+    },
+    {
+     "w": "key.",
+     "t": 25.099
+    },
+    {
+     "w": "No",
+     "t": 25.719
+    },
+    {
+     "w": "bill.",
+     "t": 25.838
+    },
+    {
+     "w": "And",
+     "t": 26.319
+    },
+    {
+     "w": "nothing",
+     "t": 26.399
+    },
+    {
+     "w": "leaves",
+     "t": 26.678
+    },
+    {
+     "w": "your",
+     "t": 26.919
+    },
+    {
+     "w": "laptop.",
+     "t": 27.079
+    }
+   ]
+  },
+  {
+   "id": "V10",
+   "scene": "s5",
+   "start": 28.038,
+   "end": 31.598,
+   "caption": "Comment \"SORT\" and I'll send you a 20-line script that sorts a whole folder of emails.",
+   "hl": [
+    "\"SORT\""
+   ],
+   "words": [
+    {
+     "w": "Comment",
+     "t": 28.038
+    },
+    {
+     "w": "\"SORT\"",
+     "t": 28.378
+    },
+    {
+     "w": "and",
+     "t": 28.838
+    },
+    {
+     "w": "I'll",
+     "t": 28.898
+    },
+    {
+     "w": "send",
+     "t": 29.038
+    },
+    {
+     "w": "you",
+     "t": 29.178
+    },
+    {
+     "w": "a",
+     "t": 29.338
+    },
+    {
+     "w": "20-line",
+     "t": 29.438
+    },
+    {
+     "w": "script",
+     "t": 29.858
+    },
+    {
+     "w": "that",
+     "t": 30.158
+    },
+    {
+     "w": "sorts",
+     "t": 30.338
+    },
+    {
+     "w": "a",
+     "t": 30.518
+    },
+    {
+     "w": "whole",
+     "t": 30.698
+    },
+    {
+     "w": "folder",
+     "t": 30.878
+    },
+    {
+     "w": "of",
+     "t": 31.178
+    },
+    {
+     "w": "emails.",
+     "t": 31.338
+    }
+   ]
+  },
+  {
+   "id": "V11",
+   "scene": "s5",
+   "start": 32.418,
+   "end": 33.858,
+   "caption": "Build more. Scroll less.",
+   "hl": [
+    "Build"
+   ],
+   "words": [
+    {
+     "w": "Build",
+     "t": 32.418
+    },
+    {
+     "w": "more.",
+     "t": 32.698
+    },
+    {
+     "w": "Scroll",
+     "t": 33.278
+    },
+    {
+     "w": "less.",
+     "t": 33.538
+    }
+   ]
+  }
+ ]
+}

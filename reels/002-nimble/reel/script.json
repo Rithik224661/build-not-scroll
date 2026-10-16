@@ -1,0 +1,104 @@
+{
+  "title": "Nimble",
+  "keyword": "SORT",
+  "lines": [
+    {
+      "id": "V01",
+      "scene": "s1",
+      "text": "Meta just released the weights to an eight hundred and sixteen billion parameter AI model.",
+      "caption": "Meta just released the weights to an 816 billion parameter AI model.",
+      "hl": [
+        "816"
+      ]
+    },
+    {
+      "id": "V02",
+      "scene": "s1",
+      "text": "To run it at home, you need two Mac Studios.",
+      "caption": "To run it at home, you need two Mac Studios.",
+      "hl": [
+        "two"
+      ]
+    },
+    {
+      "id": "V03",
+      "scene": "s2",
+      "text": "So here's the release from this week you'll actually use.",
+      "caption": "So here's the release from this week you'll actually use.",
+      "hl": [
+        "actually"
+      ]
+    },
+    {
+      "id": "V04",
+      "scene": "s2",
+      "text": "Ollama now ships Nimble, a decision model that runs on your own machine.",
+      "caption": "Ollama now ships Nimble, a decision model that runs on your own machine.",
+      "hl": [
+        "Nimble,"
+      ]
+    },
+    {
+      "id": "V05",
+      "scene": "s3",
+      "text": "Install it with one command.",
+      "caption": "Install it with one command.",
+      "hl": [
+        "one"
+      ]
+    },
+    {
+      "id": "V06",
+      "scene": "s3",
+      "text": "Pipe in an email, and ask: is a refund being requested?",
+      "caption": "Pipe in an email, and ask: is a refund being requested?",
+      "hl": [
+        "refund"
+      ]
+    },
+    {
+      "id": "V07",
+      "scene": "s3",
+      "text": "It answers yes or no, with a confidence score.",
+      "caption": "It answers yes or no, with a confidence score.",
+      "hl": [
+        "yes",
+        "no,"
+      ]
+    },
+    {
+      "id": "V08",
+      "scene": "s3",
+      "text": "Add labels, and it routes every ticket to the right team.",
+      "caption": "Add labels, and it routes every ticket to the right team.",
+      "hl": [
+        "routes"
+      ]
+    },
+    {
+      "id": "V09",
+      "scene": "s4",
+      "text": "No API key. No bill. And nothing leaves your laptop.",
+      "caption": "No API key. No bill. And nothing leaves your laptop.",
+      "hl": []
+    },
+    {
+      "id": "V10",
+      "scene": "s5",
+      "text": "Comment sort, and I'll send you a twenty-line script that sorts a whole folder of emails.",
+      "caption": "Comment \"SORT\" and I'll send you a 20-line script that sorts a whole folder of emails.",
+      "hl": [
+        "\"SORT\""
+      ]
+    },
+    {
+      "id": "V11",
+      "scene": "s5",
+      "text": "Build more. Scroll less.",
+      "caption": "Build more. Scroll less.",
+      "hl": [
+        "Build"
+      ]
+    }
+  ]
+}
