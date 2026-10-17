@@ -34,7 +34,7 @@ export function makeClock(TL, BEATS) {
 // word-synced captions
 export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58, accentAt = () => C.mint, D }) {
   const NOCAP = new Set(nocap), CHUNKS = [];
-  const WEAK = new Set(['a', 'an', 'the', 'is', 'to', 'on', 'with', 'you', 'of', 'and', 'it', 'in', 'at', 'your', "i'll", 'that', 'for', 'my', 'this']);
+  const WEAK = new Set(['a', 'an', 'the', 'is', 'to', 'on', 'with', 'you', 'of', 'and', 'it', 'in', 'at', 'your', "i'll", 'that', 'for', 'my', 'this', 'into', 'or', 'as']);
   for (const l of TL.lines) {
     if (NOCAP.has(l.id)) continue;
     const ws = l.words.slice(skip[l.id] || 0); if (!ws.length) continue;
@@ -50,6 +50,17 @@ export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58
     });
     if (cur.length) CHUNKS.push({ line: l, words: cur });
   }
+  // measured-width guard: no chunk wider than 820 px at caption size
+  g.save(); g.font = `600 ${size}px ${SANS}`;
+  for (let i = 0; i < CHUNKS.length; i++) {
+    const c = CHUNKS[i], wOf = (ws) => g.measureText(ws.map((w) => w.w).join(' ')).width;
+    if (c.words.length > 2 && wOf(c.words) > 820) {
+      let k = c.words.length - 1; while (k > 1 && wOf(c.words.slice(0, k)) > 820) k--;
+      while (k > 1 && WEAK.has(c.words[k - 1].w.toLowerCase().replace(/[^a-z']/g, ''))) k--;
+      CHUNKS.splice(i + 1, 0, { line: c.line, words: c.words.slice(k) }); c.words = c.words.slice(0, k);
+    }
+  }
+  g.restore();
   CHUNKS.forEach((c, i) => {
     const n = CHUNKS[i + 1];
     c.start = c.words[0].t - 0.08;
@@ -64,7 +75,7 @@ export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58
     const widths = c.words.map((w) => g.measureText(w.w).width);
     const total = widths.reduce((s, v) => s + v, 0) + space * (c.words.length - 1);
     // soft dark plate behind captions so they read over any 3D scene
-    g.globalAlpha = a * 0.55; const pad = 34; g.fillStyle = 'rgba(5,7,10,0.55)';
+    g.globalAlpha = a * 0.9; const pad = 34; g.fillStyle = 'rgba(5,7,10,0.72)';
     g.beginPath(); g.roundRect((1080 - total) / 2 - pad, y - size - 18, total + pad * 2, size + 46, 28); g.fill();
     let x = (1080 - total) / 2; const accent = accentAt(t);
     c.words.forEach((w, i) => {

@@ -40,15 +40,15 @@ function pageTex(kind, seed) {
 const PW = 0.85, PH = 1.1, PT = 0.012;
 const pageGeo = new THREE.BoxGeometry(PW, PT, PH);
 const sideMat = new THREE.MeshStandardMaterial({ color: 0xdedcd4, roughness: 0.9 });
-const paperMats = [11, 23, 37].map((sd) => [sideMat, sideMat, new THREE.MeshStandardMaterial({ map: pageTex('paper', sd), roughness: 0.9, color: 0xc9c7c0 }), sideMat, sideMat, sideMat]);
-const mdMats = [5, 9].map((sd) => [sideMat, sideMat, new THREE.MeshBasicMaterial({ map: pageTex('md', sd), toneMapped: false }), sideMat, sideMat, sideMat]);
+const paperMats = [11, 23, 37].map((sd) => { const f = new THREE.MeshStandardMaterial({ map: pageTex('paper', sd), roughness: 0.9, color: 0xa8a69f }); return [sideMat, sideMat, f, f, sideMat, sideMat]; });
+const mdMats = [5, 9].map((sd) => { const f = new THREE.MeshBasicMaterial({ map: pageTex('md', sd), toneMapped: false }); return [sideMat, sideMat, f, f, sideMat, sideMat]; });
 
 // station A: a stack of documents, a scanning light plane above it, and a stream of pages through the light
 const stack = new THREE.Group(); scene.add(stack);
-for (let i = 0; i < 46; i++) {
-  const m = new THREE.Mesh(pageGeo, paperMats[i % 3]); m.position.set(Math.sin(i * 1.7) * 0.025, PT / 2 + i * (PT + 0.001), Math.cos(i * 2.3) * 0.025);
-  m.rotation.y = Math.sin(i * 0.9) * 0.05; m.castShadow = true; m.receiveShadow = true; stack.add(m);
-}
+{ const dummy = new THREE.Object3D(); const ims = paperMats.map((mt) => { const im = new THREE.InstancedMesh(pageGeo, mt, 16); im.count = 0; im.castShadow = true; im.receiveShadow = true; stack.add(im); return im; });
+  for (let i = 0; i < 46; i++) { dummy.position.set(Math.sin(i * 1.7) * 0.025, PT / 2 + i * (PT + 0.001), Math.cos(i * 2.3) * 0.025); dummy.rotation.set(0, Math.sin(i * 0.9) * 0.05, 0); dummy.updateMatrix();
+    const im = ims[i % 3]; im.setMatrixAt(im.count++, dummy.matrix); }
+  ims.forEach((im) => { im.instanceMatrix.needsUpdate = true; }); }
 const BEAM_Y = 1.25;
 const beamC = document.createElement('canvas'); beamC.width = 512; beamC.height = 64; const bx = beamC.getContext('2d');
 const bgd = bx.createLinearGradient(0, 0, 0, 64); bgd.addColorStop(0, 'rgba(126,240,196,0)'); bgd.addColorStop(0.5, 'rgba(126,240,196,1)'); bgd.addColorStop(1, 'rgba(126,240,196,0)');
@@ -57,7 +57,7 @@ const beam = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.0), new THREE.MeshBas
 beam.rotation.x = -Math.PI / 2; beam.position.set(0, BEAM_Y, 0); scene.add(beam);
 const beamFrame = new THREE.Mesh(new THREE.RingGeometry(1.25, 1.29, 4, 1), new THREE.MeshBasicMaterial({ color: 0x7ef0c4, toneMapped: false, side: THREE.DoubleSide }));
 beamFrame.rotation.x = -Math.PI / 2; beamFrame.rotation.z = Math.PI / 4; beamFrame.position.set(0, BEAM_Y, 0); scene.add(beamFrame);
-const beamLight = new THREE.PointLight(0x7ef0c4, 30, 6, 2); beamLight.position.set(0, BEAM_Y + 0.2, 0.3); scene.add(beamLight);
+const beamLight = new THREE.PointLight(0x7ef0c4, 12, 6, 2); beamLight.position.set(0, BEAM_Y + 0.2, 0.3); scene.add(beamLight);
 
 // station B: the model itself, a small glass chip the stream flows into
 const CHIP = new THREE.Vector3(3.3, 0.55, -3.6);
@@ -69,10 +69,10 @@ const chipLight = new THREE.PointLight(0x7ef0c4, 25, 5, 2); chipLight.position.c
 
 // the page stream: stack top -> up through the beam -> arcs right into the chip
 const STREAM_T0 = 0.1, DT = 0.09, LIFE = 2.0, POOL = 26;
-const streamPts = [new THREE.Vector3(0, 0.6, 0), new THREE.Vector3(0, 1.25, -0.05), new THREE.Vector3(0.35, 1.8, -0.7), new THREE.Vector3(1.5, 1.95, -2.1), new THREE.Vector3(2.8, 1.35, -3.3), CHIP.clone()];
+const streamPts = [new THREE.Vector3(0, 0.6, 0), new THREE.Vector3(0, 1.25, -0.05), new THREE.Vector3(0.75, 1.75, -0.7), new THREE.Vector3(2.0, 1.85, -2.1), new THREE.Vector3(3.0, 1.3, -3.3), CHIP.clone()];
 const streamCurve = new THREE.CatmullRomCurve3(streamPts, false, 'centripetal');
 const pool = [];
-for (let i = 0; i < POOL; i++) { const m = new THREE.Mesh(pageGeo, paperMats[0]); m.castShadow = true; scene.add(m); pool.push(m); }
+for (let i = 0; i < POOL; i++) { const m = new THREE.Mesh(pageGeo, paperMats[0]); scene.add(m); pool.push(m); }
 function updateStream(t, until) {
   const latest = Math.floor((t - STREAM_T0) / DT);
   for (let j = 0; j < POOL; j++) {
@@ -95,18 +95,20 @@ function lane(x, color) {
   for (const s of [-1, 1]) { const e = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.025, LANE_Z0 - LANE_Z1), new THREE.MeshBasicMaterial({ color, toneMapped: false })); e.position.set(x + s * 0.63, 0.02, (LANE_Z0 + LANE_Z1) / 2); scene.add(e); }
 }
 lane(-0.85, 0x6b7280); lane(0.85, 0x7ef0c4);
-const raceSlow = [], raceFast = [];
-for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.01, 0.78), paperMats[i % 3]); scene.add(m); raceSlow.push(m); }
-for (let i = 0; i < 70; i++) { const m = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.01, 0.78), mdMats[i % 2]); scene.add(m); raceFast.push(m); }
+const laneGeo = new THREE.BoxGeometry(0.6, 0.01, 0.78);
+const raceSlow = new THREE.InstancedMesh(laneGeo, paperMats[0], 6), raceFast = new THREE.InstancedMesh(laneGeo, mdMats[0], 70);
+scene.add(raceSlow, raceFast); raceSlow.frustumCulled = raceFast.frustumCulled = false;
 const SLOW_DT = 0.9, FAST_DT = 0.9 / 17, LANE_TRAVEL = 2.4;
-function laneUpdate(arr, x, dt, t, t0, t1) {
-  const latest = Math.floor((t - t0) / dt);
-  arr.forEach((m, j) => {
+const dmy = new THREE.Object3D();
+function laneUpdate(im, x, dt, t, t0, t1) {
+  const latest = Math.floor((t - t0) / dt); let c = 0;
+  for (let j = 0; j < im.instanceMatrix.count; j++) {
     const n = latest - j, te = t0 + n * dt, u = (t - te) / LANE_TRAVEL;
-    if (n < 0 || u < 0 || u > 1 || t < t0 || t > t1) { m.visible = false; return; }
-    m.visible = true; m.position.set(x, 0.06 + Math.sin(u * Math.PI) * 0.04, lerp(LANE_Z0 - 0.3, LANE_Z1 + 0.5, easeInOut(u) * 0.2 + u * 0.8));
-    m.rotation.set(0, Math.sin(n) * 0.06, 0);
-  });
+    if (n < 0 || u < 0 || u > 1 || t < t0 || t > t1) continue;
+    dmy.position.set(x, 0.06 + Math.sin(u * Math.PI) * 0.04, lerp(LANE_Z0 - 0.3, LANE_Z1 + 0.5, easeInOut(u) * 0.2 + u * 0.8));
+    dmy.rotation.set(0, Math.sin(n) * 0.06, 0); dmy.updateMatrix(); im.setMatrixAt(c++, dmy.matrix);
+  }
+  im.count = c; im.visible = c > 0; im.instanceMatrix.needsUpdate = true;
 }
 
 // station D: the terminal
@@ -185,26 +187,27 @@ const dm = world.panel({ w: 1.6, h: 1.0, px: 1000, draw: (x, t, w, h) => {
   x.globalAlpha = 1; x.restore();
 }});
 function rr2(x, a, b, w, h, r) { x.beginPath(); x.roundRect(a, b, w, h, r); }
-dm.group.position.set(0, 1.15, -33.5);
+dm.group.position.set(0, 1.7, -33.5);
 
 // ------------------------------------------------------------------ camera: one take
 const S = T;
 world.cameraPath([
   { t: 0, p: [0.05, 1.3, 5.0], l: [0.25, 1.3, 0], fov: 36 },
-  { t: S.s2 - 0.1, p: [0.15, 1.45, 4.1], l: [0.45, 1.5, -0.4], fov: 36 },
+  { t: S.s2 - 0.1, p: [0.25, 1.45, 4.0], l: [0.55, 1.5, -0.5], fov: 36 },
   { t: S.s2 + 1.9, p: [1.5, 1.45, 0.4], l: [3.3, 0.9, -3.6], fov: 36 },
   { t: S.s3 - 0.45, p: [2.05, 1.25, -0.75], l: [3.3, 0.75, -3.6], fov: 36 },
-  { t: S.s3 + 0.3, p: [0.1, 4.6, -3.6], l: [0, 0, -11.5], fov: 40 },
-  { t: S.s4 - 0.35, p: [0.0, 2.9, -8.6], l: [0, 0.3, -15], fov: 40 },
-  { t: S.s4 + 0.3, p: [0, 2.0, -15.0], l: [0, 2.3, -21], fov: 36 },
-  { t: S.s5 - 0.2, p: [0.08, 2.0, -15.45], l: [0, 2.3, -21], fov: 36 },
-  { t: S.s5 + 0.35, p: [-1.0, 2.0, -22.6], l: [-1.0, 1.95, -27], fov: 36 },
+  { t: S.s3 + 0.5, p: [0.1, 4.6, -3.8], l: [0, 0, -11.5], fov: 40 },
+  { t: S.s4 - 0.5, p: [0.0, 2.9, -8.8], l: [0, 0.3, -15], fov: 40 },
+  { t: S.s4 + 0.45, p: [0, 2.0, -15.0], l: [0, 2.3, -21], fov: 36 },
+  { t: S.s5 - 0.45, p: [0.08, 2.0, -15.5], l: [0, 2.3, -21], fov: 36 },
+  { t: S.s5 + 0.6, p: [-1.0, 2.0, -22.6], l: [-1.0, 1.95, -27], fov: 36 },
   { t: wordAt('V05', 5) - 0.2, p: [-0.95, 2.0, -22.75], l: [-1.0, 1.95, -27], fov: 36 },
-  { t: wordAt('V05', 5) + 0.5, p: [1.0, 2.0, -22.6], l: [1.0, 1.95, -27], fov: 36 },
+  { t: wordAt('V05', 5) + 0.6, p: [1.0, 2.0, -22.6], l: [1.0, 1.95, -27], fov: 36 },
   { t: L.V06.start - 0.15, p: [1.05, 2.0, -22.8], l: [1.0, 1.95, -27], fov: 36 },
-  { t: L.V06.start + 0.45, p: [-1.0, 1.35, -23.4], l: [-1.0, 1.2, -27], fov: 36 },
-  { t: S.s6 + 0.35, p: [0, 2.25, -29.2], l: [0, 2.1, -33.5], fov: 36 },
-  { t: S.s7 - 0.1, p: [0, 2.3, -29.6], l: [0, 2.1, -33.5], fov: 36 },
+  { t: L.V06.start + 0.5, p: [-1.0, 1.4, -23.3], l: [-1.0, 0.75, -27], fov: 36 },
+  { t: S.s6 - 0.15, p: [-0.6, 3.4, -24.6], l: [0, 2.0, -33.5], fov: 36 },
+  { t: S.s6 + 0.5, p: [0, 2.3, -29.2], l: [0, 2.05, -33.5], fov: 36 },
+  { t: S.s7 - 0.1, p: [0, 2.3, -30.4], l: [0, 2.05, -33.5], fov: 36 },
   { t: D, p: [0.0, 8.5, -5.5], l: [0, 0.2, -19], fov: 40 },
 ]);
 
@@ -221,11 +224,12 @@ function stat(t, at, y, big, label, color = C.ink) {
 function hook(t) {
   const a = 1 - smooth((t - (S.s2 - 0.25)) / 0.25); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
+  { const pg = g.createLinearGradient(0, 260, 0, 1010); pg.addColorStop(0, 'rgba(5,7,10,0)'); pg.addColorStop(0.15, 'rgba(5,7,10,0.45)'); pg.addColorStop(0.85, 'rgba(5,7,10,0.45)'); pg.addColorStop(1, 'rgba(5,7,10,0)'); g.fillStyle = pg; g.fillRect(0, 260, 780, 750); }
   stat(t, -1, 420, '1M', 'parameters');
   stat(t, wordAt('V01', 9), 640, '49', 'pages / second', C.mint);
   stat(t, wordAt('V01', 14), 860, '0', 'GPUs');
-  { const fa = easeOut((t - wordAt('V01', 9)) / 0.4); if (fa > 0) { g.save(); g.globalAlpha *= fa; const fw = measure('up to, on a 32-core CPU · Datalab benchmark', 32, 500) + 44; rr(80, 912, fw, 54, 27); g.fillStyle = 'rgba(5,7,10,0.72)'; g.fill(); g.restore();
-    text('up to, on a 32-core CPU · Datalab benchmark', 102, 950, { size: 32, weight: 500, color: C.dim, alpha: fa }); } }
+  { const fa = easeOut((t - wordAt('V01', 9)) / 0.4); if (fa > 0) { g.save(); g.globalAlpha *= fa; const fw = measure('up to 49/s on a 32-core CPU · Datalab benchmark', 32, 500) + 44; rr(80, 912, fw, 54, 27); g.fillStyle = 'rgba(5,7,10,0.72)'; g.fill(); g.restore();
+    text('up to 49/s on a 32-core CPU · Datalab benchmark', 102, 950, { size: 32, weight: 500, color: C.dim, alpha: fa }); } }
   g.restore();
 }
 function model(t) {
@@ -276,6 +280,7 @@ function cta(t) {
   g.font = `900 250px ${SANS}`; g.letterSpacing = '-8px'; g.textAlign = 'center'; g.textBaseline = 'middle';
   const gr = g.createLinearGradient(0, -120, 0, 120); gr.addColorStop(0, '#B9FFE6'); gr.addColorStop(1, '#4FD8A5'); g.fillStyle = gr;
   g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 40; g.fillText('PDF', 0, 0); g.restore();
+  text('10-line script → AI-ready knowledge base', 540, 735, { size: 42, weight: 600, align: 'center', color: C.ink, shadow: 16, alpha: easeOut((t - (wordAt('V07', 4) - 0.1)) / 0.4) });
   g.restore();
 }
 function brand(t) {
@@ -324,10 +329,11 @@ function renderFrame(t) {
   laneUpdate(raceSlow, -0.85, SLOW_DT, t, S.s3 - 0.3, S.s4 + 0.6);
   laneUpdate(raceFast, 0.85, FAST_DT, t, S.s3 - 0.3, S.s4 + 0.6);
   beam.material.opacity = 0.45 + 0.12 * Math.sin(t * 9);
+  { const k = 1 - smooth((t - (S.s3 - 0.2)) / 0.8); beamLight.intensity = 12 * k; chipLight.intensity = 25 * k; beamLight.visible = chipLight.visible = k > 0.001; }
   chip.rotation.y = t * 0.35; chipEdges.rotation.y = t * 0.35;
   term.visible = t > S.s3 ? 1 : 0; scanP.visible = mdP.visible = t > S.s4 ? 1 : 0; dm.visible = t > S.s5 ? 1 : 0;
   g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
-  g.drawImage(world.render(t), 0, 0);
+  g.drawImage(world.render(t), 0, 0, W, H);
   grade();
   hook(t); model(t); race(t); build(t); convert(t); cta(t); brand(t);
   captions(t);

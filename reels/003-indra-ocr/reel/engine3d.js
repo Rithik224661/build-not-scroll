@@ -19,11 +19,13 @@ export const sstep = (x) => { x = clamp01(x); return x * x * x * (x * (x * 6 - 1
 function mulberry32(a) { return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 export function createWorld({ width = 1080, height = 1920, bg = '#07090D', fog = '#07090D', accent = '#7EF0C4', rim = '#4D8BFF', floor = true } = {}) {
+  const Q = new URLSearchParams(location.search);
+  const noRefl = Q.has('norefl'), noShadow = Q.has('noshadow'), scale = Number(Q.get('gl') || 1);
   const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
-  r.setPixelRatio(1); r.setSize(width, height, false);
+  r.setPixelRatio(1); r.setSize(Math.round(width * scale), Math.round(height * scale), false);
   r.outputColorSpace = THREE.SRGBColorSpace; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0;
-  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.shadowMap.enabled = !noShadow; r.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(bg);
@@ -36,7 +38,7 @@ export function createWorld({ width = 1080, height = 1920, bg = '#07090D', fog =
 
   // lights: soft key from above-front, coloured rims, low fill
   const key = new THREE.SpotLight(0xffffff, 260, 40, Math.PI / 6, 0.75, 1.6);
-  key.position.set(2.5, 9, 6); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 6; key.shadow.bias = -0.0005;
+  key.position.set(2.5, 9, 6); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 6; key.shadow.bias = -0.0005;
   scene.add(key, key.target);
   const rimA = new THREE.PointLight(new THREE.Color(accent), 60, 22, 2); rimA.position.set(-6, 3, -5); scene.add(rimA);
   const rimB = new THREE.PointLight(new THREE.Color(rim), 70, 24, 2); rimB.position.set(7, 4, -8); scene.add(rimB);
@@ -47,17 +49,17 @@ export function createWorld({ width = 1080, height = 1920, bg = '#07090D', fog =
   if (floor) {
     // glossy floor = a real mirror (Reflector) under a translucent dark lacquer, so panels and lights
     // leave soft reflections like a product-shoot floor
-    const mirror = new Reflector(new THREE.PlaneGeometry(400, 400), { textureWidth: width / 2, textureHeight: height / 2, color: 0x6b7480 });
+    const mirror = noRefl ? new THREE.Object3D() : new Reflector(new THREE.PlaneGeometry(400, 400), { textureWidth: width / 3, textureHeight: height / 3, color: 0x6b7480 });
     mirror.rotation.x = -Math.PI / 2; mirror.position.y = -0.001; scene.add(mirror);
     floorMesh = new THREE.Mesh(new THREE.PlaneGeometry(400, 400),
-      new THREE.MeshStandardMaterial({ color: 0x07090c, roughness: 0.6, metalness: 0.2, transparent: true, opacity: 0.88 }));
+      new THREE.MeshLambertMaterial({ color: 0x07090c, transparent: true, opacity: 0.88 }));
     floorMesh.rotation.x = -Math.PI / 2; floorMesh.receiveShadow = true; scene.add(floorMesh);
     const grid = new THREE.GridHelper(200, 100, 0x2a3442, 0x1a212c);
     grid.material.transparent = true; grid.material.opacity = 0.6; grid.position.y = 0.003; scene.add(grid);
   }
   // cyclorama light wall far behind everything: a huge soft glow that gives the frame a horizon and depth
   const wc = document.createElement('canvas'); wc.width = 512; wc.height = 512; const wx = wc.getContext('2d');
-  const wg = wx.createRadialGradient(256, 300, 0, 256, 300, 300); wg.addColorStop(0, 'rgba(255,255,255,1)'); wg.addColorStop(0.5, 'rgba(255,255,255,.25)'); wg.addColorStop(1, 'rgba(255,255,255,0)');
+  const wg = wx.createRadialGradient(256, 256, 0, 256, 256, 250); wg.addColorStop(0, 'rgba(255,255,255,1)'); wg.addColorStop(0.5, 'rgba(255,255,255,.25)'); wg.addColorStop(1, 'rgba(255,255,255,0)');
   wx.fillStyle = wg; wx.fillRect(0, 0, 512, 512);
   const wallMat = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(wc), color: new THREE.Color(accent).multiplyScalar(0.32), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending });
   const wall = new THREE.Mesh(new THREE.PlaneGeometry(90, 50), wallMat); wall.position.set(0, 4, -70); scene.add(wall);
@@ -105,21 +107,32 @@ export function createWorld({ width = 1080, height = 1920, bg = '#07090D', fog =
 
   // camera rig: keyframes {t, p:[x,y,z], l:[x,y,z], fov?}; between keys we move with smootherstep,
   // positions follow a Catmull-Rom curve through the keys so the path never kinks.
-  let keys = [];
-  function cameraPath(k) { keys = k.slice().sort((a, b) => a.t - b.t); }
-  const v = (a) => new THREE.Vector3(...a);
+  // one smooth move through all keys: positions/targets on Catmull-Rom curves, curve parameter u(t) from a
+  // monotone cubic (Fritsch-Carlson) through (key time, key index) so the camera never stops dead at a key
+  // and never overshoots; it only eases in at the very first and out at the very last key.
+  let keys = [], pCurve = null, lCurve = null, slopes = [];
+  function cameraPath(k) {
+    keys = k.slice().sort((a, b) => a.t - b.t);
+    const P = keys.map((q) => new THREE.Vector3(...q.p)), Lk = keys.map((q) => new THREE.Vector3(...q.l));
+    pCurve = new THREE.CatmullRomCurve3(P, false, 'centripetal'); lCurve = new THREE.CatmullRomCurve3(Lk, false, 'centripetal');
+    const n = keys.length, d = [];
+    for (let i = 0; i < n - 1; i++) d.push(1 / Math.max(1e-6, keys[i + 1].t - keys[i].t));
+    slopes = keys.map((_, i) => (i === 0 || i === n - 1) ? 0 : (d[i - 1] * d[i] > 0 ? 2 / (1 / d[i - 1] + 1 / d[i]) : 0));
+  }
+  function uAt(t) {
+    const n = keys.length; if (t <= keys[0].t) return 0; if (t >= keys[n - 1].t) return 1;
+    let i = keys.findIndex((k) => k.t > t) - 1; const h = keys[i + 1].t - keys[i].t, s = (t - keys[i].t) / h;
+    const h00 = 2 * s ** 3 - 3 * s ** 2 + 1, h10 = s ** 3 - 2 * s ** 2 + s, h01 = -2 * s ** 3 + 3 * s ** 2, h11 = s ** 3 - s ** 2;
+    const idx = h00 * i + h10 * h * slopes[i] + h01 * (i + 1) + h11 * h * slopes[i + 1];
+    return Math.min(1, Math.max(0, idx / (n - 1)));
+  }
   function cam(t) {
     if (!keys.length) return;
-    let i = keys.findIndex((k) => k.t > t); if (i === -1) i = keys.length; i = Math.max(1, Math.min(keys.length - 1, i));
-    const a = keys[i - 1], b = keys[i], u = sstep((t - a.t) / Math.max(1e-6, b.t - a.t));
-    const p0 = v((keys[i - 2] || a).p), p1 = v(a.p), p2 = v(b.p), p3 = v((keys[i + 1] || b).p);
-    const curve = new THREE.CatmullRomCurve3([p0, p1, p2, p3], false, 'centripetal');
-    const pos = t <= keys[0].t ? v(keys[0].p) : t >= keys[keys.length - 1].t ? v(keys[keys.length - 1].p) : curve.getPoint((1 + u) / 3);
-    const look = t <= keys[0].t ? v(keys[0].l) : t >= keys[keys.length - 1].t ? v(keys[keys.length - 1].l) : v(a.l).lerp(v(b.l), u);
-    // tiny deterministic handheld breathing (sub-degree, never a shake)
+    const u = uAt(t), pos = pCurve.getPoint(u), look = lCurve.getPoint(u);
     pos.x += Math.sin(t * 0.7) * 0.025; pos.y += Math.sin(t * 0.53 + 1) * 0.018;
     camera.position.copy(pos); camera.lookAt(look);
-    const fa = a.fov ?? 34, fb = b.fov ?? fa; camera.fov = lerp(fa, fb, u); camera.updateProjectionMatrix();
+    const fi = u * (keys.length - 1), i0 = Math.floor(fi), i1 = Math.min(keys.length - 1, i0 + 1), f = fi - i0;
+    const fa = keys[i0].fov ?? 34, fb = keys[i1].fov ?? fa; camera.fov = lerp(fa, fb, f); camera.updateProjectionMatrix();
   }
 
   function render(t) {

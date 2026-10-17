@@ -61,7 +61,7 @@ async function main() {
     }
     if (flag('bench')) {
       const t0 = Date.now();
-      for (let i = 0; i < 10; i++) await grab(10 + i / meta.fps);
+      const bt = Number(arg('bt', '10')); for (let i = 0; i < 10; i++) await grab(bt + i / meta.fps);
       console.log(`bench: ${((Date.now() - t0) / 10).toFixed(0)} ms/frame`);
       return;
     }
