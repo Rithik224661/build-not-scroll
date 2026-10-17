@@ -48,7 +48,13 @@ never contains the model weights or any generated audio.
 License). Sound effects: Mixkit Sound Effects Free License. The script lists every file and its source URL.
 Mixkit allows using them in your own videos but not redistributing the raw files, which is why they are not in this repo.
 
+### Reel 003 music and sound effects
+
+`reels/003-indra-ocr/reel/scripts/download-audio.sh` fetches the music bed "Young Trizzy" by Arulo
+(https://assets.mixkit.co/music/416/416.mp3, Mixkit Stock Music Free License: commercial and social-media use
+allowed, no attribution required) plus the Mixkit sound effects listed in the script, into `assets/audio/` (git-ignored).
+
 ## Not used
 
-No stock footage or AI image/video models. In reel 001 every sound is synthesised in `mix.py`; reel 002
-uses the Mixkit files above. Every frame of both reels is drawn by code.
+No stock footage or AI image/video models. In reel 001 every sound is synthesised in `mix.py`; reels 002 and 003
+use the Mixkit files above. Every frame is drawn by code.

@@ -1,22 +1,28 @@
-"""Final audio for reel 002.
+"""Final audio for reel 003 (env: BGM, BGM_OFFSET, BED_DB, DUCK_DB, POCKET_DB, KEY_DIP, NO_BGM, MIX_OUT).
 
 voice.wav (from tts.py) -> light voice chain (ffmpeg: high-pass, mud cut, presence lift, gentle compression, de-ess)
-+ continuous BGM bed (Mixkit "House Vibez", licence in video-shotcraft assets/audio/ATTRIBUTION.md),
++ continuous BGM bed (Mixkit "Young Trizzy" by Arulo, Mixkit Stock Music Free License), offset so scene cuts land on kicks,
+  with a dynamic-EQ "voice pocket" (300 Hz-3.5 kHz of the music cut while speaking) and a dip under the CTA keyword,
   ducked under the voice with a smoothed side-chain envelope (no pumping, no dead silence between lines)
 + foley SFX from audio/sfx_cues.json (written by `node render.mjs --events` from the same clock as the picture)
 -> two-pass loudnorm to -14 LUFS integrated, -1.0 dBTP, then a safety limiter.
 
 Writes audio/mix.wav (48 kHz stereo, 24-bit) and qa/mix_report.json.
 """
-import json, os, pathlib, subprocess, tempfile, re
+import json, os as _os, pathlib, subprocess, tempfile, re
 import numpy as np, soundfile as sf
 
 ROOT = pathlib.Path(__file__).parent
-ASSETS = pathlib.Path(os.environ.get("AUDIO_DIR", ROOT / "assets" / "audio"))   # filled by scripts/download-audio.sh
+ASSETS = pathlib.Path(_os.environ.get("AUDIO_DIR", ROOT / "assets" / "audio"))   # filled by scripts/download-audio.sh
 SR = 48000
-BGM = ASSETS / "bgm" / "house-vibez.mp3"
-BED_UNDER_VOICE_DB = -15.0      # bed RMS relative to voice RMS while speaking
-DUCK_DB = 5.0                   # extra lift in gaps = bed is 7 dB louder when nobody talks
+BGM = ASSETS / "bgm" / _os.environ.get("BGM", "young-trizzy.mp3")
+NO_BGM = _os.environ.get("NO_BGM") == "1"          # voice + SFX only (to add an Instagram sound in-app)
+BGM_OFFSET = _os.environ.get("BGM_OFFSET", "41.615")          # seconds into the track; default = first sustained-energy point
+OUT = _os.environ.get("MIX_OUT", "mix.wav")
+BED_UNDER_VOICE_DB = float(_os.environ.get("BED_DB", -7.5))      # bed RMS relative to voice RMS while speaking
+DUCK_DB = float(_os.environ.get("DUCK_DB", 3.0))                   # extra lift in gaps when nobody talks
+POCKET_DB = float(_os.environ.get("POCKET_DB", 9.0))            # extra cut of the music's 300 Hz-3.5 kHz band while speaking
+KEY_DIP = _os.environ.get("KEY_DIP", "V07:0-1:7")                          # "LINE:k0-k1:dB" = extra bed dip over words k0..k1 of a line (CTA keyword)
 FADE_OUT = 1.4
 
 def run(cmd):
@@ -65,6 +71,7 @@ def main():
     b = eq_music(b)
     blk = int(0.5 * SR); r = np.array([rms(b[i:i + blk]) for i in range(0, len(b) - blk, blk)])
     start = int(np.argmax(r > 0.75 * np.median(r[: min(len(r), 120)]))) * blk
+    if BGM_OFFSET is not None: start = int(float(BGM_OFFSET) * SR)
     b = b[start:]
     while len(b) < n: b = np.concatenate([b, b])
     b = b[:n]
@@ -73,7 +80,22 @@ def main():
     gain = g_speak * (1 + (db(DUCK_DB) - 1) * (1 - env))
     fo = int(FADE_OUT * SR); gain[-fo:] *= np.linspace(1, 0, fo) ** 1.5
     fi = int(0.04 * SR); gain[:fi] *= np.linspace(0, 1, fi)
-    mixbuf = b * gain[:, None]
+    if KEY_DIP:                                    # duck the bed harder under the CTA keyword so it can't be misheard
+        tl = json.loads((ROOT / "timeline.json").read_text())
+        for spec in KEY_DIP.split(","):
+            lid, ks, d = spec.split(":"); k0, k1 = map(int, ks.split("-"))
+            ws = next(l for l in tl["lines"] if l["id"] == lid)["words"]
+            t0 = ws[k0]["t"] - 0.12; t1 = (ws[k1 + 1]["t"] if k1 + 1 < len(ws) else ws[k1]["t"] + 0.5)
+            dip = np.ones(n, np.float32); i0, i1 = int(t0 * SR), int(t1 * SR); ramp = int(0.08 * SR)
+            dip[i0:i1] = db(-float(d)); dip[i0 - ramp:i0] = np.linspace(1, db(-float(d)), ramp); dip[i1:i1 + ramp] = np.linspace(db(-float(d)), 1, ramp)
+            gain *= dip
+    if POCKET_DB > 0:                              # dynamic EQ: carve the voice band out of the music only while speaking
+        from scipy.signal import butter, sosfiltfilt
+        sos = butter(2, [300, 3500], btype="bandpass", fs=SR, output="sos")
+        mid = sosfiltfilt(sos, b, axis=0).astype(np.float32)
+        pocket = 1 - (1 - db(-POCKET_DB)) * env
+        b = (b - mid) + mid * pocket[:, None]
+    mixbuf = b * gain[:, None] * (0.0 if NO_BGM else 1.0)
 
     # SFX
     cues = json.loads((ROOT / "audio" / "sfx_cues.json").read_text())["cues"]
@@ -100,7 +122,7 @@ def main():
     # two-pass loudnorm to -14 LUFS
     r1 = run(["ffmpeg", "-v", "info", "-i", str(pre), "-af", "loudnorm=I=-14:TP=-1.0:LRA=9:print_format=json", "-f", "null", "-"])
     m = json.loads(re.findall(r"\{[^{}]+\}", r1.stderr)[-1])
-    final = ROOT / "audio" / "mix.wav"
+    final = ROOT / "audio" / OUT
     run(["ffmpeg", "-y", "-v", "error", "-i", str(pre), "-af",
          f"loudnorm=I=-14:TP=-1.0:LRA=9:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:"
          f"measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true,alimiter=limit=0.84:level=false,aresample={SR}",

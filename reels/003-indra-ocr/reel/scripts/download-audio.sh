@@ -4,7 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 get() { mkdir -p "assets/audio/$(dirname "$1")"; [ -s "assets/audio/$1" ] || curl -fsSL "$2" -o "assets/audio/$1"; echo "ok  $1"; }
-get bgm/house-vibez.mp3                  https://assets.mixkit.co/music/745/745.mp3
+get bgm/young-trizzy.mp3                 https://assets.mixkit.co/music/416/416.mp3
+get bgm/house-vibez.mp3                  https://assets.mixkit.co/music/745/745.mp3   # optional: the earlier, quieter bed (BGM=house-vibez.mp3 BGM_OFFSET=67.87 BED_DB=-15 DUCK_DB=5 POCKET_DB=0 KEY_DIP=)
 get sfx/impact/bass-hit-short.mp3        https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3
 get sfx/impact/impact-zoom-quick.mp3     https://assets.mixkit.co/active_storage/sfx/772/772-preview.mp3
 get sfx/transition/swoosh-quick.mp3      https://assets.mixkit.co/active_storage/sfx/166/166-preview.mp3

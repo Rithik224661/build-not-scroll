@@ -42,6 +42,8 @@ License for this script: MIT
 
 [`reel/`](reel) is the real source. New in this one: `engine3d.js`, a deterministic three.js "studio world" (glossy reflective floor, soft key and coloured rim lights, fog, live Canvas2D panels, dust) that the camera flies through in one continuous take, with `overlay.js` drawing type and word-synced captions on top. Voice: Chatterbox TTS, best of two takes per line picked by Whisper. Cover: [`cover/`](cover), a three.js product shot.
 
+Audio: `mix.py` lays a Mixkit trap bed ("Young Trizzy", Arulo) under the voice, offset to 41.6 s so the six scene cuts land on kicks (mean 40 ms, max 83 ms from a strong transient). Three tricks keep the music loud without burying the voice: a smoothed side-chain duck, a dynamic-EQ "voice pocket" that cuts the music's 300 Hz–3.5 kHz band by 9 dB only while someone is speaking, and an extra 7 dB dip under the CTA keyword. Whisper transcribes the music mix with the same word error rate as the dry voice. `NO_BGM=1 MIX_OUT=mix_nomusic.wav python mix.py` renders a voice + SFX version so you can add an Instagram sound in the app instead.
+
 ```bash
 cd reel && npm install && npm run stills
 ```
