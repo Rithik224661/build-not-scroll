@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover A: Studio</title>
+<style>
+  @font-face { font-family: 'Geist'; font-weight: 600; src: url('./fonts/Geist-SemiBold.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist'; font-weight: 900; src: url('./fonts/Geist-Black.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-weight: 600; src: url('./fonts/GeistMono-SemiBold.woff2') format('woff2'); }
+  :root { --ink: #0E1115; --ink-2: rgba(14,17,21,.58); --mint: #7EF0C4; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    position: relative;
+    /* seamless studio paper: cool light grey, brighter where the key light hits */
+    background:
+      radial-gradient(900px 700px at 56% 60%, #F7F8F9 0%, rgba(247,248,249,0) 72%),
+      radial-gradient(1500px 600px at 50% 92%, rgba(150,156,165,.35) 0%, rgba(150,156,165,0) 70%),
+      linear-gradient(180deg, #D6D9DE 0%, #E6E8EB 40%, #E2E4E8 64%, #CBCFD5 100%);
+  }
+  #gl { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+  /* photographic grain + vignette, so it reads as a shot, not a gradient */
+  .grain { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .22;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .vig { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(1400px 1700px at 55% 52%, rgba(0,0,0,0) 55%, rgba(20,24,30,.22) 100%); }
+
+  .copy { position: absolute; left: 92px; right: 92px; top: 318px; color: var(--ink); }
+  .over { font: 600 46px/1 'Geist'; letter-spacing: -.5px; color: var(--ink-2); margin: 0 0 26px 6px; }
+  .over s { text-decoration-thickness: 5px; text-decoration-color: rgba(14,17,21,.55); }
+  h1 { margin: 0; font: 900 128px/.9 'Geist'; letter-spacing: -6px; }
+  h1 .mark { position: relative; white-space: nowrap; }
+  h1 .mark::before { content: ''; position: absolute; left: -10px; right: -12px; top: 30%; bottom: -2%; background: var(--mint); z-index: -1; border-radius: 6px; }
+  h1 span.l2 { position: relative; z-index: 0; display: inline-block; }
+
+  .series { position: absolute; right: 96px; top: 330px; display: flex; gap: 22px; align-items: baseline; color: var(--ink); }
+  .series b { font: 600 34px/1 'Geist Mono'; letter-spacing: 0; }
+  .series i { font: 600 34px/1 'Geist'; font-style: normal; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="vig"></div>
+<div class="grain"></div>
+<div class="copy">
+  <p class="over">Skip the <s>816B</s>.</p>
+  <h1>This 9B runs<br><span class="l2"><span class="mark">on your laptop.</span></span></h1>
+</div>
+<div class="series"><b>002</b><i>build &gt; scroll</i></div>
+
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+await document.fonts.load('600 40px "Geist Mono"'); await document.fonts.load('900 40px Geist');
+const W = 1080, H = 1920, DPR = window.devicePixelRatio;
+const canvas = document.getElementById('gl');
+const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+r.setPixelRatio(DPR); r.setSize(W, H, false);
+r.outputColorSpace = THREE.SRGBColorSpace; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const pm = new THREE.PMREMGenerator(r);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.environmentIntensity = 0.9;
+
+const cam = new THREE.PerspectiveCamera(26, W / H, 0.1, 100);
+const CAM = (new URLSearchParams(location.search).get('cam') || '-5.5,5.25,14.9,0.1,0.72,-0.35,-250').split(',').map(Number);
+cam.position.set(CAM[0], CAM[1], CAM[2]); cam.lookAt(CAM[3], CAM[4], CAM[5]);
+cam.setViewOffset(W, H, 0, CAM[6], W, H);   // shift the frame so the laptop sits low, under the headline
+
+// key light (soft, from upper right) + fill + rim
+const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(2.2, 9, 6.5); key.castShadow = true;
+key.shadow.mapSize.set(4096, 4096); key.shadow.radius = 16; key.shadow.bias = -0.0004;
+Object.assign(key.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 20 });
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xdff7ee, 1.1); rim.position.set(-5, 3, -4); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xc9cdd3, 0.35));
+
+// ground: only catches shadow, the paper colour comes from CSS
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.17 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+// contact shadow: a soft dark ellipse right under the laptop
+const cs = document.createElement('canvas'); cs.width = cs.height = 256; const cx = cs.getContext('2d');
+const gr = cx.createRadialGradient(128, 128, 0, 128, 128, 128); gr.addColorStop(0, 'rgba(10,12,16,.55)'); gr.addColorStop(1, 'rgba(10,12,16,0)');
+cx.fillStyle = gr; cx.fillRect(0, 0, 256, 256);
+const contact = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 3.2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cs), transparent: true, depthWrite: false }));
+contact.rotation.x = -Math.PI / 2; contact.position.set(0, 0.002, 0.15); scene.add(contact);
+
+// materials
+const alu = new THREE.MeshPhysicalMaterial({ color: 0x3d4248, metalness: 1, roughness: 0.36, clearcoat: 0.25, clearcoatRoughness: 0.35 });
+const aluDark = new THREE.MeshPhysicalMaterial({ color: 0x2c3036, metalness: 1, roughness: 0.3 });
+const black = new THREE.MeshPhysicalMaterial({ color: 0x0b0d10, metalness: 0.2, roughness: 0.55 });
+const glass = new THREE.MeshPhysicalMaterial({ color: 0x050607, metalness: 0, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.03 });
+
+// laptop (generic, no logos): base + keyboard well + trackpad + lid with a live terminal on screen
+const laptop = new THREE.Group(); scene.add(laptop);
+const BW = 3.1, BD = 2.15, BT = 0.1;
+const base = new THREE.Mesh(new RoundedBoxGeometry(BW, BT, BD, 6, 0.06), alu); base.position.y = BT / 2; base.castShadow = true; laptop.add(base);
+const kb = new THREE.Mesh(new RoundedBoxGeometry(2.62, 0.02, 0.98, 4, 0.01), black); kb.position.set(0, BT + 0.002, -0.32); laptop.add(kb);
+// key caps grid
+const capG = new RoundedBoxGeometry(0.17, 0.018, 0.16, 2, 0.02), capM = new THREE.MeshPhysicalMaterial({ color: 0x0c0e11, roughness: 0.7 });
+for (let row = 0; row < 5; row++) for (let col = 0; col < 13; col++) {
+  const k = new THREE.Mesh(capG, capM); k.position.set(-1.21 + col * 0.2017, BT + 0.012, -0.74 + row * 0.205); laptop.add(k);
+}
+const pad = new THREE.Mesh(new RoundedBoxGeometry(1.15, 0.006, 0.72, 4, 0.04), aluDark); pad.position.set(0, BT + 0.001, 0.58); laptop.add(pad);
+
+// lid, hinged at the back edge
+const hinge = new THREE.Group(); hinge.position.set(0, BT, -BD / 2 + 0.02); laptop.add(hinge);
+hinge.rotation.x = -0.30;   // ~107 degrees open
+const LT = 0.07, LH = 2.05;
+const lid = new THREE.Mesh(new RoundedBoxGeometry(BW, LH, LT, 6, 0.05), alu); lid.position.set(0, LH / 2, -LT / 2); lid.castShadow = false; hinge.add(lid);
+const bezel = new THREE.Mesh(new RoundedBoxGeometry(BW - 0.04, LH - 0.04, 0.01, 4, 0.04), glass); bezel.position.set(0, LH / 2, 0.003); hinge.add(bezel);
+
+// screen texture: the real nimble command and the yes/97% answer from the reel
+const sc = document.createElement('canvas'); sc.width = 2048; sc.height = 1296; const s = sc.getContext('2d');
+s.fillStyle = '#07090C'; s.fillRect(0, 0, 2048, 1296);
+const sg = s.createRadialGradient(1024, 520, 0, 1024, 520, 1200); sg.addColorStop(0, 'rgba(126,240,196,.10)'); sg.addColorStop(1, 'rgba(126,240,196,0)'); s.fillStyle = sg; s.fillRect(0, 0, 2048, 1296);
+s.font = '600 64px "Geist Mono"'; s.textBaseline = 'alphabetic';
+s.fillStyle = '#7EF0C4'; s.fillText('❯', 120, 250);
+s.fillStyle = '#E8ECEF'; s.fillText('ollama run nimble \\', 200, 250);
+s.fillStyle = '#FFD9A0'; s.fillText('--ask "Is a refund being requested?"', 200, 350);
+s.fillStyle = '#E8ECEF'; s.fillText('< email.txt', 200, 450);
+// answer
+s.fillStyle = 'rgba(126,240,196,.16)'; s.beginPath(); s.roundRect(110, 560, 330, 150, 28); s.fill();
+s.font = '600 104px "Geist Mono"'; s.fillStyle = '#7EF0C4'; s.fillText('yes', 160, 672);
+s.fillStyle = '#F3F5F8'; s.fillText('97%', 500, 672);
+s.fillStyle = 'rgba(255,255,255,.1)'; s.beginPath(); s.roundRect(820, 610, 1000, 34, 17); s.fill();
+s.fillStyle = '#7EF0C4'; s.beginPath(); s.roundRect(820, 610, 970, 34, 17); s.fill();
+s.font = '600 46px "Geist Mono"'; s.fillStyle = 'rgba(232,236,239,.45)'; s.fillText('runs locally · no API key', 120, 860);
+s.fillStyle = '#7EF0C4'; s.fillText('❯', 120, 990); s.fillStyle = '#7EF0C4'; s.fillRect(200, 945, 34, 58);
+const tex = new THREE.CanvasTexture(sc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16;
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(BW - 0.16, (BW - 0.16) * 1296 / 2048),
+  new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+screen.position.set(0, LH / 2 + 0.03, 0.01); hinge.add(screen);
+// screen glow spilling on the keyboard deck
+const glow = new THREE.PointLight(0x7ef0c4, 1.6, 4, 2); glow.position.set(0, 0.9, -0.2); laptop.add(glow);
+
+laptop.rotation.y = Number(new URLSearchParams(location.search).get('ry') || -0.08); laptop.position.set(0.0, 0, 0);
+
+r.render(scene, cam);
+window.READY = true;
+</script>
+</body>
+</html>
