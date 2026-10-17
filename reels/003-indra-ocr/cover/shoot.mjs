@@ -7,7 +7,7 @@ const srv = http.createServer(async (q, r) => { try { const p = decodeURICompone
   const body = await readFile(f); r.writeHead(200, { 'Content-Type': MIME[path.extname(f)] ?? 'application/octet-stream' }); r.end(body); } catch { r.writeHead(404).end(); } });
 await new Promise((ok) => srv.listen(0, '127.0.0.1', ok));
 const b = await puppeteer.launch({ headless: true, protocolTimeout: 600000, args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--font-render-hinting=none', '--force-color-profile=srgb'] });
-const p = await b.newPage(); p.on('pageerror', (e) => console.error('[pageerror]', e.message)); p.on('console', (m) => { if (m.type() === 'error') console.error('[page]', m.text()); });
+const p = await b.newPage(); p.on('pageerror', (e) => console.error('[pageerror]', e.message)); p.on('console', (m) => { if (m.type() === 'error' || m.text().startsWith('CHECK')) console.error('[page]', m.text()); });
 await p.setViewport({ width: 1080, height: 1920, deviceScaleFactor: Number(scale) });
 await p.goto(`http://127.0.0.1:${srv.address().port}/${page_}`, { waitUntil: 'load', timeout: 0 });
 await p.waitForFunction('window.READY === true', { timeout: 300000 });

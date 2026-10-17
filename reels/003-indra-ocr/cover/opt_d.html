@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover D: Spec Sheet</title>
+<style>
+  @font-face { font-family: 'Geist'; font-weight: 500; src: url('./fonts/Geist-Medium.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist'; font-weight: 600; src: url('./fonts/Geist-SemiBold.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist'; font-weight: 900; src: url('./fonts/Geist-Black.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-weight: 500; src: url('./fonts/GeistMono-Medium.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-weight: 600; src: url('./fonts/GeistMono-SemiBold.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-weight: 700; src: url('./fonts/GeistMono-Bold.woff2') format('woff2'); }
+  :root { --ink: #0B0D10; --ink2: rgba(11,13,16,.62); --mint: #7EF0C4; --rule: rgba(11,13,16,.55); }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  body { position: relative; color: var(--ink);
+    background:
+      radial-gradient(1100px 900px at 38% 38%, #93F6D0 0%, rgba(147,246,208,0) 70%),
+      radial-gradient(1300px 1100px at 70% 95%, rgba(64,190,146,.55) 0%, rgba(64,190,146,0) 70%),
+      linear-gradient(170deg, #86F3C9 0%, #7EF0C4 45%, #6FE3B6 100%);
+  }
+  /* uncoated-stock grain + fibres + soft edge falloff */
+  .grain { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .30;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .25  0 0 0 0 .2  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .fibre { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; opacity: .16;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>"); }
+  .vig { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(1300px 1800px at 50% 48%, rgba(0,0,0,0) 58%, rgba(10,40,30,.22) 100%); }
+
+  .frame { position: absolute; left: 84px; right: 84px; top: 268px; bottom: 268px; }
+  .mono { font-family: 'Geist Mono'; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; font: 600 30px/1 'Geist Mono'; letter-spacing: .5px; }
+  .head .tag b { font-weight: 700; margin-right: 18px; }
+  .head .tag span { font: 600 30px/1 'Geist'; letter-spacing: 0; color: var(--ink2); }
+  .head .doc { color: var(--ink2); }
+  .rule { height: 0; border-top: 3px solid var(--ink); margin: 26px 0 0; }
+  .hair { border-top: 1.5px solid var(--rule); }
+
+  .big { position: relative; margin: 6px 0 0 -14px; font: 900 640px/.80 'Geist'; letter-spacing: -52px; white-space: nowrap; }
+  .big sup { position: absolute; font: 600 30px/1 'Geist Mono'; letter-spacing: .5px; top: 64px; right: 4px; color: var(--ink2); }
+  .sub { margin: 18px 0 0 -4px; font: 900 132px/.9 'Geist'; letter-spacing: -6px; white-space: nowrap; }
+  .sub em { font-style: normal; display: inline-block; background: var(--ink); color: var(--mint); padding: 6px 22px 14px 18px; border-radius: 14px; margin-left: 6px; }
+
+  table { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; border-collapse: collapse; }
+  td { font: 600 40px/1 'Geist Mono'; padding: 30px 0 28px; border-top: 1.5px solid var(--rule); letter-spacing: 0; }
+  tr:last-child td { border-bottom: 3px solid var(--ink); }
+  td.k { color: var(--ink2); font-weight: 500; font-size: 32px; letter-spacing: 1px; }
+  td.v { text-align: right; font-weight: 700; }
+  td.v small { font: 500 30px/1 'Geist Mono'; color: var(--ink2); margin-left: 6px; }
+
+  .what { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 24px; font: 600 43px/1.1 'Geist'; letter-spacing: -1px; }
+  .what .wt { white-space: nowrap; }
+  .what b { font-weight: 600; color: var(--ink2); margin: 0 4px; }
+  .what .chip { width: 64px; height: 82px; flex: none; border-radius: 8px; background: linear-gradient(160deg,#1A1F25,#0B0D10 60%); position: relative; overflow: hidden;
+    box-shadow: 0 16px 26px -12px rgba(8,40,28,.6); transform: rotate(-5deg);
+    background-image: linear-gradient(#7EF0C4,#7EF0C4), repeating-linear-gradient(180deg, rgba(226,232,238,.55) 0 4px, transparent 4px 11px), linear-gradient(160deg,#1A1F25,#0B0D10 60%);
+    background-size: 30px 6px, 40px 44px, 100% 100%; background-position: 10px 10px, 10px 26px, 0 0; background-repeat: no-repeat; }
+  .what .chip::after { content: ''; position: absolute; left: -4px; right: -4px; top: 46px; height: 2px; background: #CFFFEA; box-shadow: 0 0 8px 3px rgba(126,240,196,.9); }
+  /* the one object: a small dark scanned page, mint scan line, sitting on the paper */
+  .page { position: absolute; right: 6px; width: 188px; height: 240px; transform-origin: 100% 0; border-radius: 10px; background: linear-gradient(160deg, #1A1F25, #0B0D10 60%);
+    box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 30px 50px -18px rgba(8,40,28,.55), 0 8px 14px -6px rgba(8,40,28,.45); overflow: hidden; transform: rotate(4deg) scale(.8); }
+  .page i { position: absolute; left: 22px; height: 9px; border-radius: 3px; background: rgba(226,232,238,.55); }
+  .page i.h { background: var(--mint); height: 14px; }
+  .page .scan { position: absolute; left: -6px; right: -6px; top: 118px; height: 3px; background: #CFFFEA; box-shadow: 0 0 14px 4px rgba(126,240,196,.9), 0 0 40px 10px rgba(126,240,196,.35); }
+  .page .done { position: absolute; left: 0; right: 0; top: 0; height: 119px; background: rgba(126,240,196,.10); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="head"><div class="tag"><b>003</b><span>build &gt; scroll</span></div><div class="doc">OCR / SPEC SHEET</div></div>
+  <div class="rule"></div>
+  <div class="big" id="big"><span id="bigt">1M</span></div>
+  <div class="sub" id="sub">params. <em>No GPU.</em></div>
+  <div class="what" id="what"><span class="chip"></span><span class="wt">Reads PDFs &amp; scans <b>→</b> clean Markdown</span></div>
+  <table id="spec">
+    <tr><td class="k">MODEL SIZE</td><td class="v">~18 MB</td></tr>
+    <tr><td class="k">SPEED</td><td class="v"><small>up to</small> 49 pages/s</td></tr>
+    <tr><td class="k">VS TESSERACT 5</td><td class="v">~17x</td></tr>
+    <tr><td class="k">GPU</td><td class="v">none</td></tr>
+  </table>
+</div>
+<div class="fibre"></div>
+<div class="grain"></div>
+<div class="vig"></div>
+<script>
+(async () => {
+  await Promise.all(['900 100px Geist','600 40px Geist','500 40px "Geist Mono"','600 40px "Geist Mono"','700 40px "Geist Mono"'].map((f) => document.fonts.load(f)));
+  await document.fonts.ready;
+  // fit the giant 1M to the frame width
+  const big = document.getElementById('big'), t = document.getElementById('bigt'), fw = big.parentElement.clientWidth + 10;
+  let fs = 640, w = 0;
+  const FR = big.parentElement.getBoundingClientRect();
+  const setB = (f) => { big.style.fontSize = f + 'px'; big.style.letterSpacing = (-0.07 * f) + 'px'; };
+  const cv = document.createElement('canvas').getContext('2d');
+  const inkW = (f) => { cv.font = `900 ${f}px Geist`; cv.letterSpacing = (-0.07 * f) + 'px'; const m = cv.measureText('1M'); return m.actualBoundingBoxLeft + m.actualBoundingBoxRight; };
+  fs = 640 * FR.width / inkW(640); setB(fs);
+  const r0 = t.getBoundingClientRect(); cv.font = `900 ${fs}px Geist`; cv.letterSpacing = (-0.07 * fs) + 'px'; const m0 = cv.measureText('1M');
+  big.style.marginLeft = (-14 + FR.left - (r0.left - m0.actualBoundingBoxLeft)) + 'px'; w = fs;
+  const sub = document.getElementById('sub'); let ss = 132;
+  for (let k = 0; k < 6; k++) { sub.style.fontSize = ss + 'px'; sub.style.letterSpacing = (-ss * 0.045) + 'px'; const em = sub.querySelector('em').getBoundingClientRect(); ss *= (FR.right - FR.left) / (em.right - FR.left + 2); }
+  sub.style.fontSize = ss + 'px'; sub.style.letterSpacing = (-ss * 0.045) + 'px';
+  // park the page object above the table, right-aligned
+  const tb = document.getElementById('spec').getBoundingClientRect(), fr = big.parentElement.getBoundingClientRect();
+  const pg = document.getElementById('what'); const sb = document.getElementById('sub').getBoundingClientRect(); pg.style.top = ((sb.bottom + tb.top) / 2 - fr.top - 41) + 'px'; window.GAP = [sb.bottom, tb.top];
+  window.METRICS = { fs, w, tableTop: tb.top, gap: window.GAP };
+  const wr = document.querySelector('.wt').getBoundingClientRect(); const c2 = document.createElement('canvas').getContext('2d'); window.CHECK = { frame: [FR.left, FR.right], what: [wr.left, wr.right], big: t.getBoundingClientRect().toJSON(), fs }; console.log('CHECK ' + JSON.stringify(window.CHECK));
+  window.READY = true;
+})();
+</script>
+</body>
+</html>

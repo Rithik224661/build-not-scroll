@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover A: Laser Scan</title>
+<style>
+  @font-face { font-family: 'Geist'; font-weight: 600; src: url('./fonts/Geist-SemiBold.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist'; font-weight: 900; src: url('./fonts/Geist-Black.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-weight: 600; src: url('./fonts/GeistMono-SemiBold.woff2') format('woff2'); }
+  :root { --ink: #F3F5F8; --ink-2: rgba(243,245,248,.62); --mint: #7EF0C4; --bg: #07090C; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  #gl { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+  .grain { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; opacity: .32;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .vig { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(1300px 1700px at 50% 55%, rgba(0,0,0,0) 50%, rgba(0,0,0,.55) 100%); }
+  /* top shade so the headline always sits on deep black */
+  .shade { position: absolute; left: 0; right: 0; top: 0; height: 900px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(7,9,12,.85) 0%, rgba(7,9,12,.55) 55%, rgba(7,9,12,0) 100%); }
+
+  .copy { position: absolute; left: 84px; right: 84px; top: 318px; color: var(--ink); }
+  .over { font: 600 44px/1 'Geist'; letter-spacing: -.4px; color: var(--ink-2); margin: 0 0 30px 8px; display: flex; align-items: center; gap: 18px; }
+  .over .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 18px 4px rgba(126,240,196,.55); }
+  h1 { margin: 0; font: 900 212px/.86 'Geist'; letter-spacing: -11px; }
+  h1 .l2 { display: block; font-size: 150px; letter-spacing: -7px; margin-top: 14px; color: var(--mint);
+    text-shadow: 0 0 40px rgba(126,240,196,.35); }
+
+  .series { position: absolute; right: 92px; top: 326px; display: flex; gap: 20px; align-items: baseline; color: var(--ink); }
+  .series b { font: 600 34px/1 'Geist Mono'; }
+  .series i { font: 600 34px/1 'Geist'; font-style: normal; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="shade"></div>
+<div class="vig"></div>
+<div class="grain"></div>
+<div class="copy">
+  <p class="over"><span class="dot"></span>1M-param OCR. No GPU.</p>
+  <h1>49 pages<span class="l2">a second.</span></h1>
+</div>
+<div class="series"><b>003</b><i>build &gt; scroll</i></div>
+
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { Reflector } from 'three/addons/objects/Reflector.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+await document.fonts.load('600 40px "Geist Mono"'); await document.fonts.load('900 40px Geist'); await document.fonts.load('600 40px Geist');
+const Q = new URLSearchParams(location.search);
+const W = 1080, H = 1920, DPR = window.devicePixelRatio;
+const canvas = document.getElementById('gl');
+const r = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+r.setPixelRatio(DPR); r.setSize(W, H, false);
+r.outputColorSpace = THREE.SRGBColorSpace; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0;
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const BG = 0x07090c;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(BG);
+scene.fog = new THREE.FogExp2(BG, 0.062);
+const pm = new THREE.PMREMGenerator(r);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.22;
+
+const CAM = (Q.get('cam') || '-9.2,6.0,17.8,0.7,1.4,0,-300').split(',').map(Number);
+const cam = new THREE.PerspectiveCamera(27, W / H, 0.1, 120);
+cam.position.set(CAM[0], CAM[1], CAM[2]); cam.lookAt(CAM[3], CAM[4], CAM[5]);
+cam.setViewOffset(W, H, 0, CAM[6], W, H);
+
+// ---- floor: real mirror under a dark translucent lacquer + faint grid
+const mirror = new Reflector(new THREE.PlaneGeometry(80, 80), { textureWidth: W * DPR / 2, textureHeight: H * DPR / 2, color: 0x7a8490 });
+mirror.rotation.x = -Math.PI / 2; scene.add(mirror);
+const lacquer = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshLambertMaterial({ color: 0x0a0d11, transparent: true, opacity: 0.86 }));
+lacquer.rotation.x = -Math.PI / 2; lacquer.position.y = 0.002; lacquer.receiveShadow = true; scene.add(lacquer);
+const grid = new THREE.GridHelper(80, 160, 0x1b2a26, 0x121a19); grid.position.y = 0.004; grid.material.transparent = true; grid.material.opacity = 0.35; if (!Q.has('nogrid')) scene.add(grid);
+
+// ---- light: dim cool key from above-right, mint rim from behind, blue rim from left
+const key = new THREE.SpotLight(0xdfe7f0, 38, 30, 0.42, 0.75, 1.6); key.position.set(3.5, 9, 5); key.target.position.set(0, 0.8, 0);
+key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 10; key.shadow.bias = -0.0005; scene.add(key, key.target);
+const rimM = new THREE.DirectionalLight(0x7ef0c4, 1.6); rimM.position.set(3, 3, -6); scene.add(rimM);
+const rimB = new THREE.DirectionalLight(0x6b97ff, 0.9); rimB.position.set(-7, 2.5, -2); scene.add(rimB);
+scene.add(new THREE.HemisphereLight(0x9fb0c0, 0x050607, 0.12));
+
+// ---- back light walls (additive soft blobs) for depth
+function blob(color, a) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, `rgba(${color},${a})`); g.addColorStop(1, `rgba(${color},0)`);
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const addBlob = (tex, w, h, x, y, z) => { if (Q.has('noblob') && z < -5) return { lookAt(){} }; const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false, toneMapped: false })); m.position.set(x, y, z); m.renderOrder = 10; scene.add(m); return m; };
+addBlob(blob('126,240,196', 0.10), 22, 12, 3.5, 7.2, -12);
+addBlob(blob('107,151,255', 0.08), 18, 11, -7, 6.8, -12);
+
+// ---- page textures
+function pageTex(kind, seed) {
+  const c = document.createElement('canvas'); c.width = 680; c.height = 880; const x = c.getContext('2d');
+  let s = seed; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  if (kind === 'paper') {
+    x.fillStyle = '#E9E8E3'; x.fillRect(0, 0, 680, 880); x.fillStyle = '#2B2E34'; x.fillRect(60, 70, 330, 34);
+    for (let i = 0; i < 16; i++) { x.fillStyle = 'rgba(43,46,52,.45)'; x.fillRect(60, 150 + i * 40, 430 + rnd() * 130, 12); }
+    x.strokeStyle = 'rgba(43,46,52,.4)'; x.lineWidth = 3; x.strokeRect(60, 680, 560, 150);
+  } else {
+    x.fillStyle = '#0A0F12'; x.fillRect(0, 0, 680, 880);
+    x.strokeStyle = 'rgba(126,240,196,.9)'; x.lineWidth = 6; x.strokeRect(3, 3, 674, 874);
+    x.fillStyle = '#7EF0C4'; x.font = '700 70px "Geist Mono"'; x.fillText('#', 56, 124); x.fillRect(112, 80, 300, 40);
+    for (let i = 0; i < 12; i++) {
+      const head = i % 4 === 0; x.fillStyle = head ? 'rgba(126,240,196,.85)' : 'rgba(220,232,240,.55)';
+      if (head) { x.font = '700 40px "Geist Mono"'; x.fillText('##', 56, 205 + i * 52); }
+      x.fillRect(head ? 120 : 56, 176 + i * 52, 300 + rnd() * 220, 16);
+    }
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; return t;
+}
+const PW = 2.1, PD = 2.72, PT = 0.018, GAP = 0.0035, N = 64;
+const side = new THREE.MeshStandardMaterial({ color: 0xd9d8d2, roughness: 0.9 });
+const paperM = [3, 7, 13].map((sd) => [side, side, new THREE.MeshStandardMaterial({ map: pageTex('paper', sd), roughness: 0.85 }), side, side, side]);
+const mdSide = new THREE.MeshBasicMaterial({ color: 0x7ef0c4, toneMapped: false });
+const mdM = [5, 11, 17].map((sd) => { const f = new THREE.MeshBasicMaterial({ map: pageTex('md', sd), toneMapped: false }); return [mdSide, mdSide, f, mdSide, mdSide, f]; });
+const geo = new THREE.BoxGeometry(PW, PT, PD);
+
+const stack = new THREE.Group(); scene.add(stack);
+for (let i = 0; i < N; i++) {
+  const m = new THREE.Mesh(geo, paperM[i % 3]);
+  m.position.set(Math.sin(i * 1.7) * 0.025, PT / 2 + i * (PT + GAP), Math.cos(i * 2.3) * 0.025); m.rotation.y = Math.sin(i * 0.9) * 0.03;
+  m.castShadow = true; m.receiveShadow = true; stack.add(m);
+}
+const TOP = N * (PT + GAP);
+
+// ---- laser: a thin bright sheet slicing the stack near the top, with a hot line where it cuts the paper
+const scanY = TOP * 0.78;
+const lc = document.createElement('canvas'); lc.width = 1024; lc.height = 1024; const lx = lc.getContext('2d');
+const lg = lx.createRadialGradient(512, 512, 0, 512, 512, 512); lg.addColorStop(0, 'rgba(126,240,196,.40)'); lg.addColorStop(.45, 'rgba(126,240,196,.12)'); lg.addColorStop(1, 'rgba(126,240,196,0)');
+lx.fillStyle = lg; lx.fillRect(0, 0, 1024, 1024);
+const lt = new THREE.CanvasTexture(lc); lt.colorSpace = THREE.SRGBColorSpace;
+const sheet = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshBasicMaterial({ map: lt, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, toneMapped: false, fog: false }));
+sheet.rotation.x = -Math.PI / 2; sheet.position.y = scanY; scene.add(sheet);
+const hot = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x7ef0c4).multiplyScalar(4.5), toneMapped: false });
+const T = 0.03, E = 0.014;
+for (const z of [-1, 1]) { const e = new THREE.Mesh(new THREE.BoxGeometry(PW + E * 2, T, E), hot); e.position.set(0, scanY, z * (PD / 2 + E / 2)); scene.add(e); }
+for (const x2 of [-1, 1]) { const e = new THREE.Mesh(new THREE.BoxGeometry(E, T, PD + E * 2), hot); e.position.set(x2 * (PW / 2 + E / 2), scanY, 0); scene.add(e); }
+// the beam emitter: a long thin bar at the far side throwing the sheet
+const emit = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: new THREE.Color(0x7ef0c4).multiplyScalar(1.6), toneMapped: false }));
+emit.position.set(0.6, scanY, -3.2);
+const gl1 = new THREE.PointLight(0x7ef0c4, 2.2, 3.5, 2); gl1.position.set(-0.4, scanY + 0.25, 1.8); scene.add(gl1);
+const gl2 = new THREE.PointLight(0x7ef0c4, 1.2, 3, 2); gl2.position.set(1.8, scanY + 0.15, -0.4); scene.add(gl2);
+
+// ---- pages lifting off above the laser, becoming Markdown panels (rising up and back-right)
+const lifts = [
+  [0.18, 0.26, -0.10, 0.10, 0.05, 0.08],
+  [0.70, 0.66, -0.45, 0.28, 0.13, -0.05],
+  [1.35, 1.10, -0.95, 0.50, 0.24, 0.09],
+  [2.05, 1.58, -1.55, 0.78, 0.36, -0.03],
+];
+lifts.forEach(([dx, dy, dz, ry, rx, rz], i) => {
+  const m = new THREE.Mesh(geo, mdM[i % 3]); m.position.set(dx, TOP + dy, dz); m.rotation.set(rx, ry, rz); scene.add(m);
+  const pl = new THREE.PointLight(0x7ef0c4, 0.35, 1.6, 2); pl.position.set(dx, TOP + dy - 0.25, dz); scene.add(pl);
+});
+// speed streaks: thin vertical light trails rising from the laser line to the floating pages
+{
+  const c = document.createElement('canvas'); c.width = 16; c.height = 256; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 256, 0, 0); g.addColorStop(0, 'rgba(126,240,196,.9)'); g.addColorStop(1, 'rgba(126,240,196,0)'); x.fillStyle = g; x.fillRect(0, 0, 16, 256);
+  const tex = new THREE.CanvasTexture(c);
+  let s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < 16; i++) {
+    const h = 0.6 + rnd() * 1.6, m = new THREE.Mesh(new THREE.PlaneGeometry(0.012 + rnd() * 0.012, h), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.35 + rnd() * 0.4, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+    const side = rnd() < 0.5 ? -1 : 1, along = (rnd() - 0.5) * 2;
+    if (rnd() < 0.5) m.position.set(side * (PW / 2 + 0.02), scanY + h / 2, along * PD / 2); else m.position.set(along * PW / 2, scanY + h / 2, side * (PD / 2 + 0.02));
+    m.lookAt(cam.position.x, m.position.y, cam.position.z); m.renderOrder = 11; scene.add(m);
+  }
+}
+// one page mid-transition: just above the top of the stack, still paper
+{ const m = new THREE.Mesh(geo, paperM[1]); m.position.set(0.02, TOP + 0.08, 0.02); m.rotation.set(0.02, 0.05, 0.03); m.castShadow = true; scene.add(m); }
+
+// ---- dust / bokeh (deterministic)
+{
+  let s = 99; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,255,255,.5)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  const dt = new THREE.CanvasTexture(c);
+  const pos = [], col = []; const mint = new THREE.Color(0x7ef0c4), wh = new THREE.Color(0xdfe8f0);
+  for (let i = 0; i < 260; i++) { pos.push((rnd() - 0.5) * 12, rnd() * 5.5, (rnd() - 0.6) * 10); const k = rnd() < 0.45 ? mint : wh; const a = 0.25 + rnd() * 0.6; col.push(k.r * a, k.g * a, k.b * a); }
+  const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g2.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  scene.add(new THREE.Points(g2, new THREE.PointsMaterial({ size: 0.05, map: dt, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true })));
+  // a few large out-of-focus bokeh discs near camera
+  for (let i = 0; i < 4; i++) { const sz = 0.35 + rnd() * 0.35; const b = addBlob(blob(i % 2 ? '126,240,196' : '200,215,230', 0.07), sz, sz, -5.5 + rnd() * 2.0, 0.3 + rnd() * 1.2, 6.5 + rnd() * 2.5); b.lookAt(cam.position); }
+}
+
+// ---- bloom
+const comp = new EffectComposer(r); comp.setPixelRatio(DPR); comp.setSize(W, H);
+comp.addPass(new RenderPass(scene, cam));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), Number(Q.get('bs') || 0.7), 0.4, Number(Q.get('bt') || 1.25)));
+comp.addPass(new OutputPass());
+comp.render();
+window.READY = true;
+</script>
+</body>
+</html>
