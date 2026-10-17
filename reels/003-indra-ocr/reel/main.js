@@ -7,6 +7,9 @@ await Promise.all(['500 40px Geist', '600 40px Geist', '700 40px Geist', '900 40
 const TL = await (await fetch('./timeline.json')).json();
 const BEATS = (await (await fetch('./beats.json')).json()).beats;
 const { L, wordAt, onBeat, D } = makeClock(TL, BEATS);
+// language-aware: named word anchors + localised on-screen strings from timeline.json (English defaults)
+const AN = (id, key, d) => { const a = L[id].anchors; return a && key in a ? a[key] : d; };
+const STR = TL.strings || {}, tx = (k, d) => STR[k] ?? d;
 const W = 1080, H = 1920, out = document.getElementById('c'); out.width = W; out.height = H;
 const g = out.getContext('2d');
 const { text, measure, rr } = makeText(g);
@@ -117,7 +120,7 @@ const OUTS = ['invoice-4821.md', 'lease-agreement.md', 'paper-attention.md', 'me
 const K = {};
 function sched() {
   K.c1 = L.V04.start + 0.05; K.c1e = K.c1 + CMD1.length / 20;
-  K.c2 = Math.max(K.c1e + 0.35, wordAt('V04', 2) - 0.1); K.c2e = K.c2 + CMD2.length / 22;
+  K.c2 = Math.max(K.c1e + 0.35, wordAt('V04', AN('V04', 'cmd2', 2)) - 0.1); K.c2e = K.c2 + CMD2.length / 22;
   K.o0 = K.c2e + 0.2;
 }
 sched();
@@ -178,7 +181,7 @@ mdP.group.position.set(MD.x, 1.35, MD.z); mdP.group.rotation.y = -0.12;
 // station F: the DM card that delivers the script
 const dm = world.panel({ w: 1.6, h: 1.0, px: 1000, draw: (x, t, w, h) => {
   x.fillStyle = '#0E1218'; x.fillRect(0, 0, w, h); x.save(); x.translate(-10, 20); x.scale(1.4, 1.4); w = w / 1.4;
-  const a1 = clamp01((t - (T.s6 + 0.2)) / 0.3), a2 = clamp01((t - (wordAt('V07', 4) - 0.1)) / 0.3);
+  const a1 = clamp01((t - (T.s6 + 0.2)) / 0.3), a2 = clamp01((t - (wordAt('V07', AN('V07', 'card', 4)) - 0.1)) / 0.3);
   x.globalAlpha = a1; x.fillStyle = '#2B6BFF'; rr2(x, w - 300, 60, 250, 90, 45); x.fill();
   x.fillStyle = '#fff'; x.font = '700 44px Geist'; x.textAlign = 'center'; x.fillText('PDF', w - 175, 120); x.textAlign = 'left';
   x.globalAlpha = a2; x.fillStyle = '#1C222B'; rr2(x, 50, 190, 640, 160, 36); x.fill();
@@ -201,8 +204,8 @@ world.cameraPath([
   { t: S.s4 + 0.45, p: [0, 2.0, -15.0], l: [0, 2.3, -21], fov: 36 },
   { t: S.s5 - 0.45, p: [0.08, 2.0, -15.5], l: [0, 2.3, -21], fov: 36 },
   { t: S.s5 + 0.6, p: [-1.0, 2.0, -22.6], l: [-1.0, 1.95, -27], fov: 36 },
-  { t: wordAt('V05', 5) - 0.2, p: [-0.95, 2.0, -22.75], l: [-1.0, 1.95, -27], fov: 36 },
-  { t: wordAt('V05', 5) + 0.6, p: [1.0, 2.0, -22.6], l: [1.0, 1.95, -27], fov: 36 },
+  { t: wordAt('V05', AN('V05', 'md', 5)) - 0.2, p: [-0.95, 2.0, -22.75], l: [-1.0, 1.95, -27], fov: 36 },
+  { t: wordAt('V05', AN('V05', 'md', 5)) + 0.6, p: [1.0, 2.0, -22.6], l: [1.0, 1.95, -27], fov: 36 },
   { t: L.V06.start - 0.15, p: [1.05, 2.0, -22.8], l: [1.0, 1.95, -27], fov: 36 },
   { t: L.V06.start + 0.5, p: [-1.0, 1.4, -23.3], l: [-1.0, 0.75, -27], fov: 36 },
   { t: S.s6 - 0.15, p: [-0.6, 3.4, -24.6], l: [0, 2.0, -33.5], fov: 36 },
@@ -226,9 +229,9 @@ function hook(t) {
   g.save(); g.globalAlpha *= a;
   { const pg = g.createLinearGradient(0, 260, 0, 1010); pg.addColorStop(0, 'rgba(5,7,10,0)'); pg.addColorStop(0.15, 'rgba(5,7,10,0.45)'); pg.addColorStop(0.85, 'rgba(5,7,10,0.45)'); pg.addColorStop(1, 'rgba(5,7,10,0)'); g.fillStyle = pg; g.fillRect(0, 260, 780, 750); }
   stat(t, -1, 420, '1M', 'parameters');
-  stat(t, wordAt('V01', 9), 640, '49', 'pages / second', C.mint);
-  stat(t, wordAt('V01', 14), 860, '0', 'GPUs');
-  { const fa = easeOut((t - wordAt('V01', 9)) / 0.4); if (fa > 0) { g.save(); g.globalAlpha *= fa; const fw = measure('up to 49/s on a 32-core CPU · Datalab benchmark', 32, 500) + 44; rr(80, 912, fw, 54, 27); g.fillStyle = 'rgba(5,7,10,0.72)'; g.fill(); g.restore();
+  stat(t, wordAt('V01', AN('V01', 's49', 9)), 640, '49', 'pages / second', C.mint);
+  stat(t, wordAt('V01', AN('V01', 'gpu', 14)), 860, '0', 'GPUs');
+  { const fa = easeOut((t - wordAt('V01', AN('V01', 's49', 9))) / 0.4); if (fa > 0) { g.save(); g.globalAlpha *= fa; const fw = measure('up to 49/s on a 32-core CPU · Datalab benchmark', 32, 500) + 44; rr(80, 912, fw, 54, 27); g.fillStyle = 'rgba(5,7,10,0.72)'; g.fill(); g.restore();
     text('up to 49/s on a 32-core CPU · Datalab benchmark', 102, 950, { size: 32, weight: 500, color: C.dim, alpha: fa }); } }
   g.restore();
 }
@@ -236,8 +239,8 @@ function model(t) {
   const a = win(t, S.s2 + 0.1, S.s3); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
   text('Indra OCR', 96, 470, { size: 130, weight: 900, track: -5, shadow: 30 });
-  text('PDF or scan  →  clean Markdown', 100, 560, { size: 50, weight: 600, color: C.ink, alpha: easeOut((t - wordAt('V02', 6)) / 0.4), shadow: 16 });
-  const ma = easeOut((t - (wordAt('V02', 15) - 0.1)) / 0.4);
+  text(tx('pdfline', 'PDF or scan  →  clean Markdown'), 100, 560, { size: 50, weight: 600, color: C.ink, alpha: easeOut((t - wordAt('V02', AN('V02', 'pdfline', 6))) / 0.4), shadow: 16 });
+  const ma = easeOut((t - (wordAt('V02', AN('V02', 'mb18', 15)) - 0.1)) / 0.4);
   if (ma > 0) { g.save(); g.globalAlpha *= ma; rr(96, 610, 330, 96, 48); g.fillStyle = 'rgba(126,240,196,0.16)'; g.fill(); g.lineWidth = 2; g.strokeStyle = 'rgba(126,240,196,0.7)'; g.stroke(); g.restore();
     text('18 MB model', 132, 674, { size: 46, weight: 700, color: C.mint, alpha: ma }); }
   g.restore();
@@ -245,9 +248,9 @@ function model(t) {
 function race(t) {
   const a = win(t, S.s3 + 0.05, S.s4); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
-  const k = easeOut((t - (wordAt('V03', 8) - 0.1)) / 0.4);
+  const k = easeOut((t - (wordAt('V03', AN('V03', 'x17', 8)) - 0.1)) / 0.4);
   text('≈17×', 540, 520, { size: 230, weight: 900, track: -10, align: 'center', color: C.mint, alpha: k, shadow: 34 });
-  text('faster than Tesseract', 540, 610, { size: 54, weight: 700, align: 'center', alpha: k, shadow: 16 });
+  text(tx('faster', 'faster than Tesseract'), 540, 610, { size: 54, weight: 700, align: 'center', alpha: k, shadow: 16 });
   // lane labels with live counters
   const el = Math.max(0, t - S.s3);
   const slow = Math.floor(el / SLOW_DT), fast = Math.floor(el / FAST_DT);
@@ -261,35 +264,35 @@ function race(t) {
 function build(t) {
   const a = win(t, S.s4 + 0.1, S.s5); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
-  text('One install.', 96, 420, { size: 96, weight: 700, track: -3, shadow: 26, alpha: easeOut((t - L.V04.start) / 0.35) });
-  text('One command.', 96, 520, { size: 96, weight: 700, track: -3, color: C.mint, shadow: 26, alpha: easeOut((t - (wordAt('V04', 2) - 0.05)) / 0.35) });
+  text(tx('install', 'One install.'), 96, 420, { size: 96, weight: 700, track: -3, shadow: 26, alpha: easeOut((t - L.V04.start) / 0.35) });
+  text(tx('command', 'One command.'), 96, 520, { size: 96, weight: 700, track: -3, color: C.mint, shadow: 26, alpha: easeOut((t - (wordAt('V04', AN('V04', 'cmd2', 2)) - 0.05)) / 0.35) });
   g.restore();
 }
 function convert(t) {
   const a = win(t, S.s5 + 0.1, S.s6); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
   text('Scan → Markdown', 540, 420, { size: 92, weight: 900, track: -3, align: 'center', shadow: 26 });
-  text('headings · lists · tables · reading order', 540, 490, { size: 40, weight: 600, align: 'center', color: C.dim, shadow: 14, alpha: easeOut((t - wordAt('V05', 6)) / 0.4) });
+  text('headings · lists · tables · reading order', 540, 490, { size: 40, weight: 600, align: 'center', color: C.dim, shadow: 14, alpha: easeOut((t - wordAt('V05', AN('V05', 'heads', 6))) / 0.4) });
   g.restore();
 }
 function cta(t) {
   const a = win(t, S.s6, S.s7 + 0.2); if (a <= 0) return;
   g.save(); g.globalAlpha *= a;
-  text('Comment', 540, 400, { size: 76, weight: 700, align: 'center', color: C.dim, shadow: 20 });
+  text(tx('comment', 'Comment'), 540, 400, { size: 76, weight: 700, align: 'center', color: C.dim, shadow: 20 });
   g.save(); g.translate(540, 560); const s = lerp(0.85, 1, backOut((t - S.s6) / 0.5)); g.scale(s, s);
   g.font = `900 250px ${SANS}`; g.letterSpacing = '-8px'; g.textAlign = 'center'; g.textBaseline = 'middle';
   const gr = g.createLinearGradient(0, -120, 0, 120); gr.addColorStop(0, '#B9FFE6'); gr.addColorStop(1, '#4FD8A5'); g.fillStyle = gr;
   g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 40; g.fillText('PDF', 0, 0); g.restore();
-  text('10-line script → AI-ready knowledge base', 540, 735, { size: 42, weight: 600, align: 'center', color: C.ink, shadow: 16, alpha: easeOut((t - (wordAt('V07', 4) - 0.1)) / 0.4) });
+  text('10-line script → AI-ready knowledge base', 540, 735, { size: 42, weight: 600, align: 'center', color: C.ink, shadow: 16, alpha: easeOut((t - (wordAt('V07', AN('V07', 'card', 4)) - 0.1)) / 0.4) });
   g.restore();
 }
 function brand(t) {
   const a = easeOut((t - (S.s7 + 0.3)) / 0.6); if (a <= 0) return;
-  text('Send it to that friend.', 540, 470, { size: 84, weight: 700, track: -2, align: 'center', shadow: 26, alpha: a });
+  text(tx('friend', 'Send it to that friend.'), 540, 470, { size: 84, weight: 700, track: -2, align: 'center', shadow: 26, alpha: a });
   text('@rithikgour.ai', 540, 560, { size: 42, weight: 600, align: 'center', color: C.mint, shadow: 16, alpha: easeOut((t - (S.s7 + 0.8)) / 0.6) });
 }
 
-const captions = makeCaptions(g, TL, { nocap: ['V01', 'V07'], D });
+const captions = makeCaptions(g, TL, { nocap: ['V01', 'V07'], D, weak: TL.weak || [], noStart: TL.noStart || [], chunker: TL.chunker || 'greedy', ...(TL.capSize ? { size: TL.capSize } : {}) });
 
 // top and bottom grade so type always sits on calm tone
 function grade() {
@@ -305,11 +308,11 @@ function grade() {
 function sfxCues() {
   const c = [], add = (t, s, db, kind, dur) => c.push({ t: +t.toFixed(3), s, db, kind, ...(dur ? { dur: +dur.toFixed(3) } : {}) });
   add(0.0, 'impact/bass-hit-short', -17, 'hook');
-  [wordAt('V01', 9), wordAt('V01', 14)].forEach((w, i) => add(w - 0.08, 'ui/switch-tap', -19 - i, 'stat'));
+  [wordAt('V01', AN('V01', 's49', 9)), wordAt('V01', AN('V01', 'gpu', 14))].forEach((w, i) => add(w - 0.08, 'ui/switch-tap', -19 - i, 'stat'));
   add(S.s2 - 0.1, 'transition/whoosh-fast', -22, 'to chip');
-  add(wordAt('V02', 15) - 0.1, 'impact/hit-weak', -21, '18 MB');
+  add(wordAt('V02', AN('V02', 'mb18', 15)) - 0.1, 'impact/hit-weak', -21, '18 MB');
   add(S.s3 - 0.1, 'transition/transition-tech-slide', -21, 'race');
-  add(wordAt('V03', 8) - 0.12, 'impact/impact-zoom-quick', -17, '17x');
+  add(wordAt('V03', AN('V03', 'x17', 8)) - 0.12, 'impact/impact-zoom-quick', -17, '17x');
   add(S.s4 - 0.1, 'transition/swoosh-quick', -22, 'terminal');
   add(K.c1, 'text/typewriter-digital', -25, 'typing', K.c1e - K.c1); add(K.c1e + 0.08, 'text/typewriter-hit-soft', -21, 'enter');
   add(K.c2, 'text/typewriter-digital', -25, 'typing', K.c2e - K.c2); add(K.c2e + 0.08, 'text/typewriter-hit-soft', -21, 'enter');
@@ -317,7 +320,7 @@ function sfxCues() {
   add(S.s5 - 0.1, 'transition/sweep-short', -23, 'to scan');
   add(L.V06.start, 'ui/switch-click-quick', -21, 'not yet');
   add(S.s6 - 0.05, 'impact/impact-zoom-quick', -17, 'PDF');
-  add(wordAt('V07', 4) - 0.1, 'ui/switch-tap', -21, 'file card');
+  add(wordAt('V07', AN('V07', 'card', 4)) - 0.1, 'ui/switch-tap', -21, 'file card');
   add(S.s7 - 0.1, 'transition/whoosh-fast', -23, 'crane up');
   return c.sort((a, b) => a.t - b.t);
 }

@@ -1,0 +1,184 @@
+{
+ "title": "Indra OCR (Hinglish)",
+ "keyword": "PDF",
+ "lang": "hi",
+ "notes": "text = Devanagari TTS input (numbers spoken in Hindi, English terms transliterated). caption = Roman Hinglish shown on screen. say = one spoken romanisation per caption token ('_' joins sub-words) for forced alignment. anchors = caption-token index of each visual beat.",
+ "lines": [
+  {
+   "id": "V01",
+   "scene": "s1",
+   "text": "यह ए आई मॉडल सिर्फ़ वन मिलियन पैरामीटर्स का है। एक सेकंड में उनचास पेजेस पढ़ लेता है। वो भी, बिना जी पी यू के।",
+   "caption": "Yeh AI model sirf 1 million parameters ka hai. Ek second mein 49 pages padh leta hai. Woh bhi, bina GPU ke.",
+   "say": "yeh ay_aai model sirf van million paraameetars ka hai ek sekand mein unchaas pejes padh leta hai vo bhi bina jee_pee_yoo ke",
+   "hl": [
+    "1",
+    "million",
+    "49",
+    "GPU"
+   ],
+   "anchors": {
+    "s49": 12,
+    "gpu": 20
+   }
+  },
+  {
+   "id": "V02",
+   "scene": "s2",
+   "text": "नाम है इंद्रा ओ सी आर। कोई भी पी डी एफ़ या स्कैन, सीधा क्लीन मार्कडाउन में। और पूरा मॉडल सिर्फ़ अठारह एम बी का।",
+   "caption": "Naam hai Indra OCR. Koi bhi PDF ya scan, seedha clean Markdown mein. Aur poora model sirf 18 MB ka.",
+   "say": "naam hai indra o_see_aar koi bhi pee_dee_ef ya skain seedha kleen maarkdaun mein aur poora model sirf athaarah em_bee ka",
+   "hl": [
+    "Markdown",
+    "18"
+   ],
+   "anchors": {
+    "pdfline": 6,
+    "mb18": 17
+   }
+  },
+  {
+   "id": "V03",
+   "scene": "s3",
+   "text": "टेसेरैक्ट, जो ओ सी आर सब यूज़ करते हैं, उससे यह क़रीब सत्रह गुना फ़ास्ट है।",
+   "caption": "Tesseract, jo OCR sab use karte hain, usse yeh kareeb 17 guna fast hai.",
+   "say": "teseraikt jo o_see_aar sab yooz karte hain usse yeh kareeb satrah guna faast hai",
+   "hl": [
+    "17"
+   ],
+   "anchors": {
+    "x17": 10
+   }
+  },
+  {
+   "id": "V04",
+   "scene": "s4",
+   "text": "बस एक इंस्टॉल, और एक कमांड। पी डी एफ़्स का पूरा फ़ोल्डर, हो गया।",
+   "caption": "Bas ek install, aur ek command. PDFs ka poora folder, ho gaya.",
+   "say": "bas ek instol aur ek kamaand pee_dee_efs ka poora foldar ho gaya",
+   "hl": [
+    "install,",
+    "command.",
+    "gaya."
+   ],
+   "anchors": {
+    "cmd2": 4
+   }
+  },
+  {
+   "id": "V05",
+   "scene": "s5",
+   "text": "हर पेज मार्कडाउन में आता है, हेडिंग्स, लिस्ट्स और टेबल्स के साथ, सही रीडिंग ऑर्डर में।",
+   "caption": "Har page Markdown mein aata hai, headings, lists aur tables ke saath, sahi reading order mein.",
+   "say": "har pej maarkdaun mein aata hai hedings lists aur tebals ke saath sahi reeding ordar mein",
+   "hl": [
+    "Markdown"
+   ],
+   "anchors": {
+    "md": 2,
+    "heads": 6
+   },
+   "breaks": [
+    0,
+    2,
+    6,
+    8,
+    12
+   ]
+  },
+  {
+   "id": "V06",
+   "scene": "s5",
+   "text": "हैंडराइटिंग? अभी नहीं।",
+   "caption": "Handwriting? Abhi nahi.",
+   "say": "haindraiting abhi nahin",
+   "hl": [
+    "nahi."
+   ],
+   "anchors": {}
+  },
+  {
+   "id": "V07",
+   "scene": "s6",
+   "text": "कमेंट करो पी डी एफ़, और मैं आपको एक दस लाइन स्क्रिप्ट भेजूँगा, जिससे पी डी एफ़्स का फ़ोल्डर ए आई रेडी नॉलेज बेस बन जाता है।",
+   "caption": "Comment karo \"PDF\", aur main aapko ek 10-line script bhejunga, jisse PDFs ka folder AI-ready knowledge base ban jaata hai.",
+   "say": "kament karo pee_dee_ef aur main aapko ek das_lain skript bhejunga jisse pee_dee_efs ka foldar ay_aai_redi nolej bes ban jaata hai",
+   "hl": [
+    "\"PDF\","
+   ],
+   "anchors": {
+    "card": 7
+   }
+  },
+  {
+   "id": "V08",
+   "scene": "s7",
+   "text": "और यह रील उस दोस्त को भेजो, जो आज भी पी डी एफ़्स से कॉपी पेस्ट करता है।",
+   "caption": "Aur yeh reel us dost ko bhejo, jo aaj bhi PDFs se copy-paste karta hai.",
+   "say": "aur yeh reel us dost ko bhejo jo aaj bhi pee_dee_efs se kopi_pest karta hai",
+   "hl": [
+    "bhejo,"
+   ],
+   "anchors": {}
+  }
+ ],
+ "strings": {
+  "pdfline": "PDF ya scan  →  clean Markdown",
+  "faster": "Tesseract se fast",
+  "install": "Ek install.",
+  "command": "Ek command.",
+  "comment": "Comment karo",
+  "friend": "Us dost ko bhejo."
+ },
+ "weak": [
+  "aata",
+  "aur",
+  "ban",
+  "bana",
+  "bhi",
+  "ek",
+  "hai",
+  "hain",
+  "ho",
+  "jaata",
+  "jisse",
+  "jo",
+  "ka",
+  "kar",
+  "karta",
+  "karte",
+  "ke",
+  "ki",
+  "ko",
+  "leta",
+  "main",
+  "mein",
+  "padh",
+  "par",
+  "se",
+  "sirf",
+  "us",
+  "usse",
+  "woh",
+  "ya",
+  "yeh"
+ ],
+ "noStart": [
+  "aata",
+  "deta",
+  "gaya",
+  "hai",
+  "hain",
+  "jaata",
+  "ka",
+  "karta",
+  "karte",
+  "ke",
+  "ki",
+  "ko",
+  "leta",
+  "mein",
+  "se"
+ ],
+ "chunker": "dp",
+ "capSize": 54
+}

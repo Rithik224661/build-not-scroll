@@ -1,0 +1,688 @@
+{
+ "fps": 30,
+ "duration": 43.5667,
+ "frames": 1307,
+ "lang": "hi",
+ "strings": {
+  "pdfline": "PDF ya scan  →  clean Markdown",
+  "faster": "Tesseract se fast",
+  "install": "Ek install.",
+  "command": "Ek command.",
+  "comment": "Comment karo",
+  "friend": "Us dost ko bhejo."
+ },
+ "weak": [
+  "aata",
+  "aur",
+  "ban",
+  "bana",
+  "bhi",
+  "ek",
+  "hai",
+  "hain",
+  "ho",
+  "jaata",
+  "jisse",
+  "jo",
+  "ka",
+  "kar",
+  "karta",
+  "karte",
+  "ke",
+  "ki",
+  "ko",
+  "leta",
+  "main",
+  "mein",
+  "padh",
+  "par",
+  "se",
+  "sirf",
+  "us",
+  "usse",
+  "woh",
+  "ya",
+  "yeh"
+ ],
+ "lines": [
+  {
+   "id": "V01",
+   "scene": "s1",
+   "start": 0.26,
+   "end": 6.741,
+   "caption": "Yeh AI model sirf 1 million parameters ka hai. Ek second mein 49 pages padh leta hai. Woh bhi, bina GPU ke.",
+   "hl": [
+    "1",
+    "million",
+    "49",
+    "GPU"
+   ],
+   "anchors": {
+    "s49": 12,
+    "gpu": 20
+   },
+   "words": [
+    {
+     "w": "Yeh",
+     "t": 0.26
+    },
+    {
+     "w": "AI",
+     "t": 0.4
+    },
+    {
+     "w": "model",
+     "t": 0.681
+    },
+    {
+     "w": "sirf",
+     "t": 1.002
+    },
+    {
+     "w": "1",
+     "t": 1.283
+    },
+    {
+     "w": "million",
+     "t": 1.504
+    },
+    {
+     "w": "parameters",
+     "t": 1.925
+    },
+    {
+     "w": "ka",
+     "t": 2.507
+    },
+    {
+     "w": "hai.",
+     "t": 2.628
+    },
+    {
+     "w": "Ek",
+     "t": 3.029
+    },
+    {
+     "w": "second",
+     "t": 3.169
+    },
+    {
+     "w": "mein",
+     "t": 3.49
+    },
+    {
+     "w": "49",
+     "t": 3.631
+    },
+    {
+     "w": "pages",
+     "t": 4.032
+    },
+    {
+     "w": "padh",
+     "t": 4.353
+    },
+    {
+     "w": "leta",
+     "t": 4.554
+    },
+    {
+     "w": "hai.",
+     "t": 4.775
+    },
+    {
+     "w": "Woh",
+     "t": 5.196
+    },
+    {
+     "w": "bhi,",
+     "t": 5.377
+    },
+    {
+     "w": "bina",
+     "t": 5.838
+    },
+    {
+     "w": "GPU",
+     "t": 6.099
+    },
+    {
+     "w": "ke.",
+     "t": 6.661
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "scene": "s2",
+   "start": 7.241,
+   "end": 14.031,
+   "caption": "Naam hai Indra OCR. Koi bhi PDF ya scan, seedha clean Markdown mein. Aur poora model sirf 18 MB ka.",
+   "hl": [
+    "Markdown",
+    "18"
+   ],
+   "anchors": {
+    "pdfline": 6,
+    "mb18": 17
+   },
+   "words": [
+    {
+     "w": "Naam",
+     "t": 7.241
+    },
+    {
+     "w": "hai",
+     "t": 7.481
+    },
+    {
+     "w": "Indra",
+     "t": 7.702
+    },
+    {
+     "w": "OCR.",
+     "t": 8.022
+    },
+    {
+     "w": "Koi",
+     "t": 9.023
+    },
+    {
+     "w": "bhi",
+     "t": 9.264
+    },
+    {
+     "w": "PDF",
+     "t": 9.504
+    },
+    {
+     "w": "ya",
+     "t": 10.005
+    },
+    {
+     "w": "scan,",
+     "t": 10.225
+    },
+    {
+     "w": "seedha",
+     "t": 10.686
+    },
+    {
+     "w": "clean",
+     "t": 11.026
+    },
+    {
+     "w": "Markdown",
+     "t": 11.307
+    },
+    {
+     "w": "mein.",
+     "t": 11.747
+    },
+    {
+     "w": "Aur",
+     "t": 12.208
+    },
+    {
+     "w": "poora",
+     "t": 12.368
+    },
+    {
+     "w": "model",
+     "t": 12.669
+    },
+    {
+     "w": "sirf",
+     "t": 12.969
+    },
+    {
+     "w": "18",
+     "t": 13.229
+    },
+    {
+     "w": "MB",
+     "t": 13.67
+    },
+    {
+     "w": "ka.",
+     "t": 13.95
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "scene": "s3",
+   "start": 14.511,
+   "end": 18.976,
+   "caption": "Tesseract, jo OCR sab use karte hain, usse yeh kareeb 17 guna fast hai.",
+   "hl": [
+    "17"
+   ],
+   "anchors": {
+    "x17": 10
+   },
+   "words": [
+    {
+     "w": "Tesseract,",
+     "t": 14.511
+    },
+    {
+     "w": "jo",
+     "t": 15.312
+    },
+    {
+     "w": "OCR",
+     "t": 15.672
+    },
+    {
+     "w": "sab",
+     "t": 16.093
+    },
+    {
+     "w": "use",
+     "t": 16.313
+    },
+    {
+     "w": "karte",
+     "t": 16.513
+    },
+    {
+     "w": "hain,",
+     "t": 16.773
+    },
+    {
+     "w": "usse",
+     "t": 17.314
+    },
+    {
+     "w": "yeh",
+     "t": 17.574
+    },
+    {
+     "w": "kareeb",
+     "t": 17.715
+    },
+    {
+     "w": "17",
+     "t": 18.015
+    },
+    {
+     "w": "guna",
+     "t": 18.355
+    },
+    {
+     "w": "fast",
+     "t": 18.596
+    },
+    {
+     "w": "hai.",
+     "t": 18.896
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "scene": "s4",
+   "start": 19.476,
+   "end": 22.556,
+   "caption": "Bas ek install, aur ek command. PDFs ka poora folder, ho gaya.",
+   "hl": [
+    "install,",
+    "command.",
+    "gaya."
+   ],
+   "anchors": {
+    "cmd2": 4
+   },
+   "words": [
+    {
+     "w": "Bas",
+     "t": 19.476
+    },
+    {
+     "w": "ek",
+     "t": 19.597
+    },
+    {
+     "w": "install,",
+     "t": 19.637
+    },
+    {
+     "w": "aur",
+     "t": 20.1
+    },
+    {
+     "w": "ek",
+     "t": 20.221
+    },
+    {
+     "w": "command.",
+     "t": 20.342
+    },
+    {
+     "w": "PDFs",
+     "t": 20.825
+    },
+    {
+     "w": "ka",
+     "t": 21.268
+    },
+    {
+     "w": "poora",
+     "t": 21.409
+    },
+    {
+     "w": "folder,",
+     "t": 21.671
+    },
+    {
+     "w": "ho",
+     "t": 22.234
+    },
+    {
+     "w": "gaya.",
+     "t": 22.395
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "scene": "s5",
+   "start": 22.997,
+   "end": 28.394,
+   "caption": "Har page Markdown mein aata hai, headings, lists aur tables ke saath, sahi reading order mein.",
+   "hl": [
+    "Markdown"
+   ],
+   "anchors": {
+    "md": 2,
+    "heads": 6
+   },
+   "words": [
+    {
+     "w": "Har",
+     "t": 22.997
+    },
+    {
+     "w": "page",
+     "t": 23.218
+    },
+    {
+     "w": "Markdown",
+     "t": 23.498
+    },
+    {
+     "w": "mein",
+     "t": 24.0
+    },
+    {
+     "w": "aata",
+     "t": 24.141
+    },
+    {
+     "w": "hai,",
+     "t": 24.381
+    },
+    {
+     "w": "headings,",
+     "t": 24.803
+    },
+    {
+     "w": "lists",
+     "t": 25.585
+    },
+    {
+     "w": "aur",
+     "t": 26.047
+    },
+    {
+     "w": "tables",
+     "t": 26.227
+    },
+    {
+     "w": "ke",
+     "t": 26.608
+    },
+    {
+     "w": "saath,",
+     "t": 26.729
+    },
+    {
+     "w": "sahi",
+     "t": 27.411
+    },
+    {
+     "w": "reading",
+     "t": 27.692
+    },
+    {
+     "w": "order",
+     "t": 28.013
+    },
+    {
+     "w": "mein.",
+     "t": 28.294
+    }
+   ],
+   "breaks": [
+    0,
+    2,
+    6,
+    8,
+    12
+   ]
+  },
+  {
+   "id": "V06",
+   "scene": "s5",
+   "start": 28.684,
+   "end": 30.089,
+   "caption": "Handwriting? Abhi nahi.",
+   "hl": [
+    "nahi."
+   ],
+   "anchors": {},
+   "words": [
+    {
+     "w": "Handwriting?",
+     "t": 28.684
+    },
+    {
+     "w": "Abhi",
+     "t": 29.647
+    },
+    {
+     "w": "nahi.",
+     "t": 29.888
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "scene": "s6",
+   "start": 30.469,
+   "end": 37.126,
+   "caption": "Comment karo \"PDF\", aur main aapko ek 10-line script bhejunga, jisse PDFs ka folder AI-ready knowledge base ban jaata hai.",
+   "hl": [
+    "\"PDF\","
+   ],
+   "anchors": {
+    "card": 7
+   },
+   "words": [
+    {
+     "w": "Comment",
+     "t": 30.469
+    },
+    {
+     "w": "karo",
+     "t": 30.81
+    },
+    {
+     "w": "\"PDF\",",
+     "t": 31.05
+    },
+    {
+     "w": "aur",
+     "t": 31.612
+    },
+    {
+     "w": "main",
+     "t": 31.752
+    },
+    {
+     "w": "aapko",
+     "t": 31.912
+    },
+    {
+     "w": "ek",
+     "t": 32.113
+    },
+    {
+     "w": "10-line",
+     "t": 32.253
+    },
+    {
+     "w": "script",
+     "t": 32.654
+    },
+    {
+     "w": "bhejunga,",
+     "t": 33.015
+    },
+    {
+     "w": "jisse",
+     "t": 33.797
+    },
+    {
+     "w": "PDFs",
+     "t": 34.098
+    },
+    {
+     "w": "ka",
+     "t": 34.579
+    },
+    {
+     "w": "folder",
+     "t": 34.74
+    },
+    {
+     "w": "AI-ready",
+     "t": 35.06
+    },
+    {
+     "w": "knowledge",
+     "t": 35.983
+    },
+    {
+     "w": "base",
+     "t": 36.324
+    },
+    {
+     "w": "ban",
+     "t": 36.584
+    },
+    {
+     "w": "jaata",
+     "t": 36.765
+    },
+    {
+     "w": "hai.",
+     "t": 37.045
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "scene": "s7",
+   "start": 37.586,
+   "end": 41.837,
+   "caption": "Aur yeh reel us dost ko bhejo, jo aaj bhi PDFs se copy-paste karta hai.",
+   "hl": [
+    "bhejo,"
+   ],
+   "anchors": {},
+   "words": [
+    {
+     "w": "Aur",
+     "t": 37.586
+    },
+    {
+     "w": "yeh",
+     "t": 37.726
+    },
+    {
+     "w": "reel",
+     "t": 37.967
+    },
+    {
+     "w": "us",
+     "t": 38.328
+    },
+    {
+     "w": "dost",
+     "t": 38.488
+    },
+    {
+     "w": "ko",
+     "t": 38.769
+    },
+    {
+     "w": "bhejo,",
+     "t": 38.889
+    },
+    {
+     "w": "jo",
+     "t": 39.471
+    },
+    {
+     "w": "aaj",
+     "t": 39.731
+    },
+    {
+     "w": "bhi",
+     "t": 39.952
+    },
+    {
+     "w": "PDFs",
+     "t": 40.173
+    },
+    {
+     "w": "se",
+     "t": 40.654
+    },
+    {
+     "w": "copy-paste",
+     "t": 40.894
+    },
+    {
+     "w": "karta",
+     "t": 41.436
+    },
+    {
+     "w": "hai.",
+     "t": 41.717
+    }
+   ]
+  }
+ ],
+ "noStart": [
+  "aata",
+  "deta",
+  "gaya",
+  "hai",
+  "hain",
+  "jaata",
+  "ka",
+  "karta",
+  "karte",
+  "ke",
+  "ki",
+  "ko",
+  "leta",
+  "mein",
+  "se"
+ ],
+ "chunker": "dp",
+ "capSize": 54
+}

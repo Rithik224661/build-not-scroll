@@ -32,10 +32,45 @@ export function makeClock(TL, BEATS) {
 }
 
 // word-synced captions
-export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58, accentAt = () => C.mint, D }) {
+export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58, accentAt = () => C.mint, D, weak = [], noStart = [], chunker = 'greedy' }) {
   const NOCAP = new Set(nocap), CHUNKS = [];
-  const WEAK = new Set(['a', 'an', 'the', 'is', 'to', 'on', 'with', 'you', 'of', 'and', 'it', 'in', 'at', 'your', "i'll", 'that', 'for', 'my', 'this', 'into', 'or', 'as']);
-  for (const l of TL.lines) {
+  const NOSTART = new Set(noStart.map((w) => w.toLowerCase()));   // words a chunk must not open with (Hindi auxiliaries: hai, gaya...)
+  const bare = (w) => w.toLowerCase().replace(/[^a-z']/g, '');
+  const WEAK = new Set(['a', 'an', 'the', 'is', 'to', 'on', 'with', 'you', 'of', 'and', 'it', 'in', 'at', 'your', "i'll", 'that', 'for', 'my', 'this', 'into', 'or', 'as', ...weak.map((w) => w.toLowerCase())]);
+  if (chunker === 'dp') {
+    // optimal line breaking per line: minimise sum of chunk costs (length off target, weak endings, auxiliary
+    // openings, number|unit splits, single words, over-width), with a bonus for breaking at punctuation
+    g.save(); g.font = `600 ${size}px ${SANS}`;
+    for (const l of TL.lines) {
+      if (NOCAP.has(l.id)) continue;
+      const ws = l.words.slice(skip[l.id] || 0).map((w) => ({ ...w, hl: l.hl.includes(w.w) })); const N = ws.length; if (!N) continue;
+      const chars = ws.reduce((a, w) => a + w.w.length + 1, 0) - 1, tgt = chars / Math.max(1, Math.ceil(chars / 27));
+      const best = [0], from = [0];
+      for (let b = 1; b <= N; b++) {
+        best[b] = Infinity;
+        for (let a = Math.max(0, b - 7); a < b; a++) {
+          const s = ws.slice(a, b).map((w) => w.w).join(' '), len = s.length;
+          if (b - a > 1 && g.measureText(s).width > 820) continue;
+          let c = 0.4 * (len - tgt) ** 2 + 40;
+          for (let k = a; k < b - 1; k++) { if (/[.?!]$/.test(ws[k].w)) c += 500; else if (/[,:;]$/.test(ws[k].w)) c += 150; }   // keep sentences/clauses whole
+          if (b < N) {
+            const last = bare(ws[b - 1].w);
+            if (WEAK.has(last)) c += 400;
+            if (NOSTART.has(bare(ws[b].w))) c += 400;
+            if (/\d$/.test(ws[b - 1].w)) c += 300;
+            if (/[.?!]$/.test(ws[b - 1].w)) c -= 150; else if (/[,:;]$/.test(ws[b - 1].w)) c -= 200;
+          }
+          if (b - a === 1 && N > 1) c += 160;
+          if (best[a] + c < best[b]) { best[b] = best[a] + c; from[b] = a; }
+        }
+      }
+      let cuts = []; for (let b = N; b > 0; b = from[b]) cuts.unshift([from[b], b]);
+      if (Array.isArray(l.breaks) && !skip[l.id]) cuts = l.breaks.map((a, k) => [a, k + 1 < l.breaks.length ? l.breaks[k + 1] : N]);   // manual override
+      for (const [a, b] of cuts) CHUNKS.push({ line: l, words: ws.slice(a, b) });
+    }
+    g.restore();
+  }
+  for (const l of (chunker === 'dp' ? [] : TL.lines)) {
     if (NOCAP.has(l.id)) continue;
     const ws = l.words.slice(skip[l.id] || 0); if (!ws.length) continue;
     const chars = ws.reduce((a, w) => a + w.w.length + 1, 0) - 1, n = Math.max(1, Math.ceil(chars / 30)), target = chars / n;
@@ -44,6 +79,7 @@ export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58
       cur.push({ ...w, hl: l.hl.includes(w.w) }); len += w.w.length + 1;
       const made = CHUNKS.filter((c) => c.line === l).length, left = ws.length - i - 1;
       if (made >= n - 1 || left < 2) return;
+      if (NOSTART.has(bare(ws[i + 1].w))) return;
       const punct = /[,:;.?!]$/.test(w.w) && Math.abs(len - target) <= 8;
       const full = len >= target && !WEAK.has(w.w.toLowerCase().replace(/[^a-z']/g, ''));
       if (punct || full || len > target + 8) { CHUNKS.push({ line: l, words: cur }); cur = []; len = 0; }
@@ -52,11 +88,11 @@ export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58
   }
   // measured-width guard: no chunk wider than 820 px at caption size
   g.save(); g.font = `600 ${size}px ${SANS}`;
-  for (let i = 0; i < CHUNKS.length; i++) {
+  for (let i = 0; i < (chunker === 'dp' ? 0 : CHUNKS.length); i++) {
     const c = CHUNKS[i], wOf = (ws) => g.measureText(ws.map((w) => w.w).join(' ')).width;
     if (c.words.length > 2 && wOf(c.words) > 820) {
       let k = c.words.length - 1; while (k > 1 && wOf(c.words.slice(0, k)) > 820) k--;
-      while (k > 1 && WEAK.has(c.words[k - 1].w.toLowerCase().replace(/[^a-z']/g, ''))) k--;
+      while (k > 1 && (WEAK.has(c.words[k - 1].w.toLowerCase().replace(/[^a-z']/g, '')) || NOSTART.has(bare(c.words[k].w)))) k--;
       CHUNKS.splice(i + 1, 0, { line: c.line, words: c.words.slice(k) }); c.words = c.words.slice(0, k);
     }
   }
@@ -67,6 +103,7 @@ export function makeCaptions(g, TL, { nocap = [], skip = {}, y = 1500, size = 58
     c.end = n && n.line === c.line ? n.words[0].t - 0.08 : Math.min(c.line.end + 0.3, n ? n.words[0].t - 0.1 : D);
   });
   if (CHUNKS.length && CHUNKS[0].line === TL.lines[0]) CHUNKS[0].start = 0;
+  if (typeof window !== 'undefined') window.CAPTION_CHUNKS = CHUNKS.map((c) => ({ line: c.line.id, text: c.words.map((w) => w.w).join(' '), start: +c.start.toFixed(2), end: +c.end.toFixed(2) }));
   return function captions(t) {
     const c = CHUNKS.find((k) => t >= k.start && t < k.end); if (!c) return;
     const a = Math.min(smooth((t - c.start) / 0.12), 1 - smooth((t - (c.end - 0.08)) / 0.08));
