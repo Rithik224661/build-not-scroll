@@ -1,0 +1,14 @@
+{
+  "title": "Indra OCR",
+  "keyword": "PDF",
+  "lines": [
+    { "id": "V01", "scene": "s1", "text": "This AI model has one million parameters. It reads forty-nine pages a second. With no GPU.", "caption": "This AI model has 1 million parameters. It reads 49 pages a second. With no GPU.", "hl": ["1", "million", "49", "GPU."] },
+    { "id": "V02", "scene": "s2", "text": "It's called Indra OCR. It turns any PDF or scan into clean Markdown, and the whole model is eighteen megabytes.", "caption": "It's called Indra OCR. It turns any PDF or scan into clean Markdown, and the whole model is 18 megabytes.", "hl": ["Markdown,", "18"] },
+    { "id": "V03", "scene": "s3", "text": "Against Tesseract, the OCR everyone uses, it's about seventeen times faster.", "caption": "Against Tesseract, the OCR everyone uses, it's about 17 times faster.", "hl": ["17"] },
+    { "id": "V04", "scene": "s4", "text": "One install. One command. A whole folder of PDFs, done.", "caption": "One install. One command. A whole folder of PDFs, done.", "hl": ["One", "done."] },
+    { "id": "V05", "scene": "s5", "text": "Every page comes back as Markdown, with headings, lists and tables, in reading order.", "caption": "Every page comes back as Markdown, with headings, lists and tables, in reading order.", "hl": ["Markdown,"] },
+    { "id": "V06", "scene": "s5", "text": "Handwriting? Not yet.", "caption": "Handwriting? Not yet.", "hl": ["yet."] },
+    { "id": "V07", "scene": "s6", "text": "Comment PDF, and I'll send you a ten-line script that turns a folder of PDFs into an AI-ready knowledge base.", "caption": "Comment \"PDF\" and I'll send you a 10-line script that turns a folder of PDFs into an AI-ready knowledge base.", "hl": ["\"PDF\""] },
+    { "id": "V08", "scene": "s7", "text": "And send this to the friend who still copy-pastes from PDFs.", "caption": "And send this to the friend who still copy-pastes from PDFs.", "hl": ["send"] }
+  ]
+}

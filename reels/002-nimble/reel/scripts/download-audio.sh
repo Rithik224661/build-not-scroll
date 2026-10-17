@@ -17,3 +17,6 @@ get sfx/ui/switch-click-quick.mp3        https://assets.mixkit.co/active_storage
 get sfx/ui/switch-light.mp3              https://assets.mixkit.co/active_storage/sfx/2579/2579-preview.mp3
 get sfx/ui/switch-tap.mp3                https://assets.mixkit.co/active_storage/sfx/2585/2585-preview.mp3
 get sfx/ui/ui-select-click.mp3           https://assets.mixkit.co/active_storage/sfx/1109/1109-preview.mp3
+get sfx/text/typewriter-digital.mp3      https://assets.mixkit.co/active_storage/sfx/1363/1363-preview.mp3
+get sfx/text/typewriter-hit-soft.mp3     https://assets.mixkit.co/active_storage/sfx/1366/1366-preview.mp3
+get sfx/impact/hit-weak.mp3              https://assets.mixkit.co/active_storage/sfx/2148/2148-preview.mp3

@@ -1,0 +1,528 @@
+{
+ "fps": 30,
+ "duration": 37.5,
+ "frames": 1125,
+ "lines": [
+  {
+   "id": "V01",
+   "scene": "s1",
+   "start": 0.2,
+   "end": 5.16,
+   "caption": "This AI model has 1 million parameters. It reads 49 pages a second. With no GPU.",
+   "hl": [
+    "1",
+    "million",
+    "49",
+    "GPU."
+   ],
+   "words": [
+    {
+     "w": "This",
+     "t": 0.2
+    },
+    {
+     "w": "AI",
+     "t": 0.4
+    },
+    {
+     "w": "model",
+     "t": 0.64
+    },
+    {
+     "w": "has",
+     "t": 0.92
+    },
+    {
+     "w": "1",
+     "t": 1.16
+    },
+    {
+     "w": "million",
+     "t": 1.42
+    },
+    {
+     "w": "parameters.",
+     "t": 1.7
+    },
+    {
+     "w": "It",
+     "t": 2.7
+    },
+    {
+     "w": "reads",
+     "t": 2.78
+    },
+    {
+     "w": "49",
+     "t": 2.98
+    },
+    {
+     "w": "pages",
+     "t": 3.44
+    },
+    {
+     "w": "a",
+     "t": 3.76
+    },
+    {
+     "w": "second.",
+     "t": 3.92
+    },
+    {
+     "w": "With",
+     "t": 4.42
+    },
+    {
+     "w": "no",
+     "t": 4.58
+    },
+    {
+     "w": "GPU.",
+     "t": 4.82
+    }
+   ]
+  },
+  {
+   "id": "V02",
+   "scene": "s2",
+   "start": 5.96,
+   "end": 11.48,
+   "caption": "It's called Indra OCR. It turns any PDF or scan into clean Markdown, and the whole model is 18 megabytes.",
+   "hl": [
+    "Markdown,",
+    "18"
+   ],
+   "words": [
+    {
+     "w": "It's",
+     "t": 5.96
+    },
+    {
+     "w": "called",
+     "t": 6.18
+    },
+    {
+     "w": "Indra",
+     "t": 6.36
+    },
+    {
+     "w": "OCR.",
+     "t": 6.72
+    },
+    {
+     "w": "It",
+     "t": 7.56
+    },
+    {
+     "w": "turns",
+     "t": 7.66
+    },
+    {
+     "w": "any",
+     "t": 7.84
+    },
+    {
+     "w": "PDF",
+     "t": 8.12
+    },
+    {
+     "w": "or",
+     "t": 8.34
+    },
+    {
+     "w": "scan",
+     "t": 8.64
+    },
+    {
+     "w": "into",
+     "t": 8.94
+    },
+    {
+     "w": "clean",
+     "t": 9.2
+    },
+    {
+     "w": "Markdown,",
+     "t": 9.44
+    },
+    {
+     "w": "and",
+     "t": 10.06
+    },
+    {
+     "w": "the",
+     "t": 10.12
+    },
+    {
+     "w": "whole",
+     "t": 10.2
+    },
+    {
+     "w": "model",
+     "t": 10.34
+    },
+    {
+     "w": "is",
+     "t": 10.6
+    },
+    {
+     "w": "18",
+     "t": 10.74
+    },
+    {
+     "w": "megabytes.",
+     "t": 11.06
+    }
+   ]
+  },
+  {
+   "id": "V03",
+   "scene": "s3",
+   "start": 12.071,
+   "end": 15.951,
+   "caption": "Against Tesseract, the OCR everyone uses, it's about 17 times faster.",
+   "hl": [
+    "17"
+   ],
+   "words": [
+    {
+     "w": "Against",
+     "t": 12.071
+    },
+    {
+     "w": "Tesseract,",
+     "t": 12.391
+    },
+    {
+     "w": "the",
+     "t": 13.091
+    },
+    {
+     "w": "OCR",
+     "t": 13.131
+    },
+    {
+     "w": "everyone",
+     "t": 13.391
+    },
+    {
+     "w": "uses,",
+     "t": 13.771
+    },
+    {
+     "w": "it's",
+     "t": 14.451
+    },
+    {
+     "w": "about",
+     "t": 14.591
+    },
+    {
+     "w": "17",
+     "t": 14.751
+    },
+    {
+     "w": "times",
+     "t": 15.191
+    },
+    {
+     "w": "faster.",
+     "t": 15.511
+    }
+   ]
+  },
+  {
+   "id": "V04",
+   "scene": "s4",
+   "start": 16.551,
+   "end": 20.091,
+   "caption": "One install. One command. A whole folder of PDFs, done.",
+   "hl": [
+    "One",
+    "done."
+   ],
+   "words": [
+    {
+     "w": "One",
+     "t": 16.551
+    },
+    {
+     "w": "install.",
+     "t": 16.891
+    },
+    {
+     "w": "One",
+     "t": 17.611
+    },
+    {
+     "w": "command.",
+     "t": 17.811
+    },
+    {
+     "w": "A",
+     "t": 18.471
+    },
+    {
+     "w": "whole",
+     "t": 18.591
+    },
+    {
+     "w": "folder",
+     "t": 18.751
+    },
+    {
+     "w": "of",
+     "t": 19.031
+    },
+    {
+     "w": "PDFs,",
+     "t": 19.191
+    },
+    {
+     "w": "done.",
+     "t": 19.871
+    }
+   ]
+  },
+  {
+   "id": "V05",
+   "scene": "s5",
+   "start": 20.631,
+   "end": 24.591,
+   "caption": "Every page comes back as Markdown, with headings, lists and tables, in reading order.",
+   "hl": [
+    "Markdown,"
+   ],
+   "words": [
+    {
+     "w": "Every",
+     "t": 20.631
+    },
+    {
+     "w": "page",
+     "t": 20.911
+    },
+    {
+     "w": "comes",
+     "t": 21.111
+    },
+    {
+     "w": "back",
+     "t": 21.351
+    },
+    {
+     "w": "as",
+     "t": 21.611
+    },
+    {
+     "w": "Markdown,",
+     "t": 21.771
+    },
+    {
+     "w": "with",
+     "t": 22.211
+    },
+    {
+     "w": "headings,",
+     "t": 22.511
+    },
+    {
+     "w": "lists",
+     "t": 23.111
+    },
+    {
+     "w": "and",
+     "t": 23.491
+    },
+    {
+     "w": "tables,",
+     "t": 23.531
+    },
+    {
+     "w": "in",
+     "t": 23.851
+    },
+    {
+     "w": "reading",
+     "t": 24.151
+    },
+    {
+     "w": "order.",
+     "t": 24.331
+    }
+   ]
+  },
+  {
+   "id": "V06",
+   "scene": "s5",
+   "start": 25.181,
+   "end": 26.161,
+   "caption": "Handwriting? Not yet.",
+   "hl": [
+    "yet."
+   ],
+   "words": [
+    {
+     "w": "Handwriting?",
+     "t": 25.181
+    },
+    {
+     "w": "Not",
+     "t": 25.821
+    },
+    {
+     "w": "yet.",
+     "t": 25.921
+    }
+   ]
+  },
+  {
+   "id": "V07",
+   "scene": "s6",
+   "start": 26.736,
+   "end": 32.116,
+   "caption": "Comment \"PDF\" and I'll send you a 10-line script that turns a folder of PDFs into an AI-ready knowledge base.",
+   "hl": [
+    "\"PDF\""
+   ],
+   "words": [
+    {
+     "w": "Comment",
+     "t": 26.736
+    },
+    {
+     "w": "\"PDF\"",
+     "t": 27.076
+    },
+    {
+     "w": "and",
+     "t": 27.836
+    },
+    {
+     "w": "I'll",
+     "t": 27.916
+    },
+    {
+     "w": "send",
+     "t": 28.056
+    },
+    {
+     "w": "you",
+     "t": 28.216
+    },
+    {
+     "w": "a",
+     "t": 28.396
+    },
+    {
+     "w": "10-line",
+     "t": 28.516
+    },
+    {
+     "w": "script",
+     "t": 28.836
+    },
+    {
+     "w": "that",
+     "t": 29.136
+    },
+    {
+     "w": "turns",
+     "t": 29.376
+    },
+    {
+     "w": "a",
+     "t": 29.536
+    },
+    {
+     "w": "folder",
+     "t": 29.676
+    },
+    {
+     "w": "of",
+     "t": 29.876
+    },
+    {
+     "w": "PDFs",
+     "t": 30.076
+    },
+    {
+     "w": "into",
+     "t": 30.636
+    },
+    {
+     "w": "an",
+     "t": 30.756
+    },
+    {
+     "w": "AI-ready",
+     "t": 30.936
+    },
+    {
+     "w": "knowledge",
+     "t": 31.476
+    },
+    {
+     "w": "base.",
+     "t": 31.756
+    }
+   ]
+  },
+  {
+   "id": "V08",
+   "scene": "s7",
+   "start": 32.784,
+   "end": 35.784,
+   "caption": "And send this to the friend who still copy-pastes from PDFs.",
+   "hl": [
+    "send"
+   ],
+   "words": [
+    {
+     "w": "And",
+     "t": 32.784
+    },
+    {
+     "w": "send",
+     "t": 32.984
+    },
+    {
+     "w": "this",
+     "t": 33.224
+    },
+    {
+     "w": "to",
+     "t": 33.404
+    },
+    {
+     "w": "the",
+     "t": 33.564
+    },
+    {
+     "w": "friend",
+     "t": 33.684
+    },
+    {
+     "w": "who",
+     "t": 33.884
+    },
+    {
+     "w": "still",
+     "t": 34.084
+    },
+    {
+     "w": "copy-pastes",
+     "t": 34.284
+    },
+    {
+     "w": "from",
+     "t": 35.004
+    },
+    {
+     "w": "PDFs.",
+     "t": 35.124
+    }
+   ]
+  }
+ ]
+}

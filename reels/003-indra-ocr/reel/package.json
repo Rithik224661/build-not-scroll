@@ -1,0 +1,26 @@
+{
+  "name": "reel-003-indra-ocr",
+  "version": "1.0.0",
+  "description": "Reel 003 \"Indra OCR\": one continuous three.js camera move through a lit studio world, Canvas 2D type on top, Chatterbox TTS voice.",
+  "private": true,
+  "license": "MIT",
+  "author": "Rithik Gour",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "voice": "python3 tts.py",
+    "stills": "node render.mjs --stills",
+    "cover": "node render.mjs --stills --q \"&cover=1\" --at 0",
+    "render": "node render.mjs",
+    "render:fresh": "node render.mjs --fresh",
+    "cues": "node render.mjs --events",
+    "mix": "python3 mix.py",
+    "encode": "node -e \"require('fs').mkdirSync('out',{recursive:true})\" && ffmpeg -y -framerate 30 -i frames/f%05d.png -i audio/mix.wav -c:v libx264 -preset slow -crf 12 -maxrate 25M -bufsize 50M -x264-params aq-mode=3:deblock=-1,-1 -pix_fmt yuv420p -colorspace bt709 -color_primaries bt709 -color_trc bt709 -c:a aac -b:a 256k -shortest -movflags +faststart out/reel.mp4"
+  },
+  "dependencies": {
+    "puppeteer": "^25.13.0",
+    "three": "^0.186.1"
+  }
+}
